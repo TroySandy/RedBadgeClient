@@ -1,26 +1,42 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import "./App.css";
+import { BrowserRouter as Switch, Route, Link } from "react-router-dom";
+import { UserContextProvider } from "./UserContext/UserContext";
+import Login from "./components/Auth/Login";
+import Register from "./components/Auth/Register";
+import Home from "./components/site/Home";
+import FileUpload from './components/FilePond/FilePond'
+import Body from './components/Unsplash/Display'
 
-function App() {
+
+const App: React.FC = () => {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <div>
+        
+      </div>
+
+      
+      <UserContextProvider>
+
+
+  
+          <Switch>
+            <Route path="/login" component={Login} />
+            <Route path="/register" component={Register} />
+            <Route path="/media" component={FileUpload} />
+            {/* <Route path='/media' commponent={Media} />
+            <Route path="/extra" component={Extra} />
+          <Route path="/admin" component={Admin} /> */}
+            <Route path="/" component={Home} />
+            </Switch>
+            
+            
+          </UserContextProvider>
+      {/* <Body /> */}
+        
     </div>
   );
-}
+};
 
 export default App;

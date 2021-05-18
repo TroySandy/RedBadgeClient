@@ -1,0 +1,13 @@
+#photos {
+  line-height: 0 !important;
+  -webkit-column-count: 5 !important;
+  -webkit-column-gap: 0px !important;
+  -moz-column-count: 5 !important;
+  -moz-column-gap: 0px !important;
+  column-count: 5 !important;
+  column-gap: 0px !important;
+}
+#photos img {
+  width: 20% !important;
+  height: auto !important;
+}

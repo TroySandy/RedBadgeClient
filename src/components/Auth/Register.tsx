@@ -1,10 +1,8 @@
-import React, {
-  BaseSyntheticEvent,
-  Component,
-  ContextType,
-  SyntheticEvent,
-} from "react";
-import { Container, Row, Col, Card, Form, Button } from "react-bootstrap";
+import React from "react";
+import TextField from "@material-ui/core/TextField";
+import FormControl from "@material-ui/core/FormControl";
+import Button from "@material-ui/core/Button";
+import "./Register.css";
 
 export interface RegisterState {
   firstName: string;
@@ -17,8 +15,8 @@ export interface RegisterState {
 
 export interface RegisterProps {}
 
-class Register extends Component<RegisterProps, RegisterState> {
-  constructor(props: RegisterProps) {
+class Register extends React.Component<{}, RegisterState> {
+  constructor(props: {}) {
     super(props);
     this.state = {
       firstName: "",
@@ -30,10 +28,7 @@ class Register extends Component<RegisterProps, RegisterState> {
     };
   }
 
-  handleSubmit(e: BaseSyntheticEvent) {
-    console.log(this.state.email);
-    
-    // const {token, setToken} = this.context!
+  registerFetch = (e: React.BaseSyntheticEvent) => {
     e.preventDefault();
     fetch(`http://localhost:4000/user/register`, {
       method: "POST",
@@ -49,20 +44,33 @@ class Register extends Component<RegisterProps, RegisterState> {
         "Content-Type": "application/json",
       },
     })
-    .then((res) => {
-      if (res.status != 201) {
-        console.log("error");
-      } else {
-        //redirect to login
-        console.log("Success");
-        // props.history.push("/login");
-      }
-      return res.json()})
-    .then((res) => console.log(res))
-    .catch((err) => console.log(err))
+      .then((res) => {
+        if (res.status != 201) {
+          console.log("error");
+        } else {
+          //redirect to login
+          console.log("Success");
+          // props.history.push("/login");
+        }
+        return res.json();
+      })
+      .then((res) => console.log(res))
+      .catch((err) => console.log(err));
+  };
+
+  componentDidMount() {
+    console.log("mounted, hehehe");
+    this.setState({
+      firstName: "",
+      lastName: "",
+      username: "",
+      email: "",
+      password: "",
+      isAdmin: false,
+    });
   }
 
-  handleChange(e: BaseSyntheticEvent) {
+  handleChange(e: React.BaseSyntheticEvent) {
     this.setState((prevstate) => ({
       ...prevstate,
       [e.target.name]: e.target.value as Pick<
@@ -71,62 +79,76 @@ class Register extends Component<RegisterProps, RegisterState> {
       >,
     }));
   }
-  componentDidMount(){
-    this.setState({
-      firstName: "",
-      lastName: "",
-      username: "",
-      email: "",
-      password: "",
-      isAdmin: false,
-    })
-  }
 
   render() {
     return (
       <div>
-        <form onSubmit={(e) => this.handleSubmit(e)}>
-          <input
-            id="firstName"
-            type="text"
-            placeholder="firstName"
-            name="firstName"
-            value={this.state.firstName}
-            onChange={(e) => this.handleChange(e)}
-          />
-          <input
-            id="lastName"
-            name="lastName"
-            type="text"
-            placeholder="lastName"
-            value={this.state.lastName}
-            onChange={(e) => this.handleChange(e)}
-          />
-          <input
-            id="username"
-            type="text"
-            placeholder="username"
-            name="username"
-            value={this.state.username}
-            onChange={(e) => this.handleChange(e)}
-          />
-          <input
-            id="email"
-            name="email"
-            type="text"
-            placeholder="email"
-            value={this.state.email}
-            onChange={(e) => this.handleChange(e)}
-          />
-          <input
-            id="password"
-            type="text"
-            placeholder="password"
-            name="password"
-            value={this.state.password}
-            onChange={(e) => this.handleChange(e)}
-          />
-          <button type="submit">Register!</button>
+        <form onSubmit={(e) => this.registerFetch(e)}>
+          <FormControl>
+            <TextField
+              label="First Name"
+              type="text"
+              name="firstName"
+              InputLabelProps={{
+                shrink: true,
+              }}
+              variant="outlined"
+              onChange={(e) => this.handleChange(e)}
+            />
+          </FormControl>
+          <FormControl>
+            <TextField
+              label="Surname"
+              type="text"
+              name="lastName"
+              InputLabelProps={{
+                shrink: true,
+              }}
+              variant="outlined"
+              onChange={(e) => this.handleChange(e)}
+            />
+          </FormControl>
+          <FormControl>
+            <TextField
+              label="Email"
+              type="email"
+              name="email"
+              InputLabelProps={{
+                shrink: true,
+              }}
+              variant="outlined"
+              onChange={(e) => this.handleChange(e)}
+            />
+          </FormControl>
+          <FormControl>
+            <TextField
+              label="Username"
+              type="text"
+              name="username"
+              InputLabelProps={{
+                shrink: true,
+              }}
+              variant="outlined"
+              onChange={(e) => this.handleChange(e)}
+            />
+          </FormControl>
+          <FormControl>
+            <TextField
+              label="Password"
+              type="password"
+              name="password"
+              InputLabelProps={{
+                shrink: true,
+              }}
+              variant="outlined"
+              onChange={(e) => this.handleChange(e)}
+            />
+          </FormControl>
+          <FormControl>
+            <Button variant="outlined" color="primary" type="submit">
+              Submit
+            </Button>
+          </FormControl>
         </form>
       </div>
     );

@@ -4,14 +4,15 @@ import { BrowserRouter as Router } from "react-router-dom";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import { Provider } from 'react-redux'
-
+import { Provider } from "react-redux";
+import "bootstrap/dist/css/bootstrap.min.css";
+import { UserContextProvider } from "./UserContext/UserContext";
 
 ReactDOM.render(
   <React.StrictMode>
-    <Router>
+    <UserContextProvider>
       <App />
-    </Router>
+    </UserContextProvider>
   </React.StrictMode>,
   document.getElementById("root")
 );

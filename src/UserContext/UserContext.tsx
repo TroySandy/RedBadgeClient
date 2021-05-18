@@ -37,32 +37,31 @@ export class UserContextProvider extends Component<
     prevProps: UserContextProviderProps,
     prevState: UserContextProviderState
   ) {
-    console.log(prevState.token, '|', this.state.token);
+    // console.log(prevState.token, "|", this.state.token);
     if (this.state.token !== prevState.token) {
       if (this.state.token) {
         localStorage.setItem("token", this.state.token);
-        console.log(this.state.token);
+        // console.log(this.state.token);
         fetch(`http://localhost:4000/user/`, {
-          headers: new Headers({ 
-            Authorization: `Bearer ${this.state.token}`}),
+          headers: new Headers({
+            Authorization: `Bearer ${this.state.token}`,
+          }),
         })
-          .then(
-            (res) => {
-              console.log(res);
-              if (res.status !== 200) {
-                this.setState({
-                  token: null,
-                  isAuth: false,
-                  user: {},
-                });
-                localStorage.removeItem("token");
-              }
-              return res.json();
+          .then((res) => {
+            // console.log(res);
+            if (res.status !== 200) {
+              this.setState({
+                token: null,
+                isAuth: false,
+                user: {},
+              });
+              localStorage.removeItem("token");
             }
-          )
+            return res.json();
+          })
           .then((data) => {
-            console.log('helloworld');
-            
+            // console.log("helloworld");
+
             if (data.user) {
               this.setState({
                 isAuth: true,
@@ -71,7 +70,7 @@ export class UserContextProvider extends Component<
             }
           });
       } else {
-        console.log('fail');
+        // console.log("fail");
         this.setState({
           isAuth: false,
           user: {},
@@ -94,6 +93,7 @@ export class UserContextProvider extends Component<
           token: this.state.token,
           setToken: this.setToken,
           isAuth: this.state.isAuth,
+          user: this.state.user,
         }}
       >
         {this.props.children}

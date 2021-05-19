@@ -1,31 +1,14 @@
 import React from "react";
-import PhotoDisplay from "../Unsplash/Display";
 import { createApi } from "unsplash-js";
 import config from "../../config";
 import UserContext from "../../UserContext/UserContext";
 import "./home.css";
-import { IUnsplash } from "../Unsplash/Interfaces";
-import CommentDisplay from "../CommentDisplay/Display";
-// import NavBar from "./Nav";
-import {
-  Container,
-  Grid,
-  Paper,
-  Card,
-  CardActionArea,
-  CardActions,
-  CardContent,
-  CardMedia,
-  Button,
-  Typography,
-  Link,
-  Modal,
-} from "@material-ui/core";
+import MediaDisplay from "../Unsplash/MediaDisplay";
+import { Container, Grid } from "@material-ui/core";
 
 interface HomeState {
   imageResult: any;
   searchInput: string;
-  open: boolean;
 }
 
 const api = createApi({
@@ -35,46 +18,27 @@ const api = createApi({
 });
 interface HomeProps {}
 
-class Home extends React.Component<HomeProps, HomeState> {
+class Home extends React.Component<{}, HomeState> {
   static contextType = UserContext;
-  constructor(props: HomeProps) {
+  constructor(props: {}) {
     super(props);
     this.state = {
       imageResult: [],
       searchInput: "",
-      open: false,
     };
   }
 
-  handleOpen = () => {
-    this.setState({
-      open: true,
-    });
-  };
-
-  handleClose = () => {
-    this.setState({
-      open: false,
-    });
-  };
-
   componentDidMount() {
-    api.photos.getRandom({ featured: true, count: 20 }).then((result) => {
-      // console.log(result);
-      // this.setState= ({
-      //   imageResult: result.response
-      // })
+    api.photos.getRandom({ featured: true, count: 50 }).then((result) => {
       if (result.errors) {
         console.log("ERROR!!!!!", result.errors[0]);
       } else {
-        const image = result.response;
+        const images = result.response;
+        console.log(result);
 
         this.setState({
-          imageResult: image,
+          imageResult: images,
         });
-        console.log(result.response);
-        console.log(image);
-        console.log(this.state.imageResult);
       }
     });
   }
@@ -83,60 +47,9 @@ class Home extends React.Component<HomeProps, HomeState> {
     return (
       <>
         <Container>
-          {/* <NavBar /> */}
-          <Grid container spacing={0}>
+          <Grid container spacing={1}>
             {this.state.imageResult.map((image: any) => {
-              console.log(image.urls.small);
-
-              return (
-                <>
-                  <Grid item sm={3} lg={4} spacing={0}>
-                    <Paper elevation={20} variant="outlined">
-                      <Card>
-                        <CardActionArea>
-                          <CardMedia>
-                            <img src={image.urls.small} />
-                          </CardMedia>
-                          <CardContent>
-                            <Typography
-                              gutterBottom
-                              variant="h5"
-                              component="h4"
-                            >
-                              {image.user.name} | {image.user.location}
-                            </Typography>
-                          </CardContent>
-                        </CardActionArea>
-                        <CardActions>
-                          <Button
-                            size="small"
-                            variant="outlined"
-                            color="primary"
-                          >
-                            Save to your list
-                          </Button>
-                          <Button
-                            size="small"
-                            variant="outlined"
-                            color="primary"
-                            onClick={this.handleOpen}
-                          >
-                            Photographer Portfolio
-                          </Button>
-                        </CardActions>
-                        <Modal
-                          open={this.state.open}
-                          onClose={this.handleClose}
-                          aria-labelledby="simple-modal-title"
-                          aria-describedby="simple-modal-description"
-                        >
-                          <CommentDisplay image={this.state.imageResult} />
-                        </Modal>
-                      </Card>
-                    </Paper>
-                  </Grid>
-                </>
-              );
+              return <MediaDisplay imageResult={image} />;
             })}
           </Grid>
         </Container>

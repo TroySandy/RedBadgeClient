@@ -1,20 +1,29 @@
 import React from "react";
 import "./App.css";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  withRouter,
+  RouteComponentProps,
+} from "react-router-dom";
 import { UserContextProvider } from "./UserContext/UserContext";
 import Login from "./components/Auth/Login";
 import Register from "./components/Auth/Register";
 import Home from "./components/site/Home";
-import Gallery from "./components/Upload/Gallery";
+import Gallery from "./components/UserPhotos/Gallery";
 import CloudUpload from "./components/Upload/Cloudinary";
-import Body from "./components/Unsplash/Display";
-import RegistrationForm from "./components/Auth/test";
 // import NavBar from "../src/components/site/Nav";
 import UserContext from "./UserContext/UserContext";
-import { Container, Paper, Button, Menu, MenuItem } from "@material-ui/core";
-import { LinkContainer } from "react-router-bootstrap";
-
-interface IMenuProps {}
+import {
+  Container,
+  Paper,
+  Button,
+  Menu,
+  Modal,
+  MenuItem,
+} from "@material-ui/core";
 
 interface IMenuState {
   anchorEl: null | HTMLElement;
@@ -64,25 +73,28 @@ class App extends React.Component<{}, IMenuState> {
                   open={Boolean(this.state.anchorEl)}
                   onClose={this.handleClose}
                 >
-                  <MenuItem>
+                  <MenuItem onClick={this.handleClose}>
                     <Link to="/">Home</Link>
                   </MenuItem>
-                  <MenuItem>
-                    <Link to="/login">Login</Link>
-                  </MenuItem>
-                  <MenuItem>
-                    <Link to="/register">Register</Link>
-                  </MenuItem>
-                  <MenuItem>
-                    <Link to="/test">test</Link>
-                  </MenuItem>
-                  <MenuItem>
-                    <Link to="/upload">Upload</Link>
-                  </MenuItem>
-                  <MenuItem>
+                  <MenuItem onClick={this.handleClose}>
                     <Link to="/media">Photos</Link>
                   </MenuItem>
                 </Menu>
+                <Link to="/login">
+                  <Button size="small" variant="outlined" color="primary">
+                    Login
+                  </Button>
+                </Link>
+                <Link to="/register">
+                  <Button size="small" variant="outlined" color="primary">
+                    Sign Up
+                  </Button>
+                </Link>
+                <Link to="/upload">
+                  <Button size="small" variant="outlined" color="primary">
+                    Upload Media
+                  </Button>
+                </Link>
               </Paper>
             </Paper>
           </Container>
@@ -93,9 +105,6 @@ class App extends React.Component<{}, IMenuState> {
             </Route>
             <Route path="/register">
               <Register />
-            </Route>
-            <Route path="/test">
-              <RegistrationForm />
             </Route>
             <Route path="/upload">
               <CloudUpload />

@@ -1,4 +1,5 @@
 import React from "react";
+import { withRouter } from "react-router";
 import UserContext from "../../UserContext/UserContext";
 
 export interface CloudState {
@@ -17,9 +18,10 @@ export interface CloudState {
   portfolio_url: string;
 }
 
-class CloudUpload extends React.Component<{}, CloudState> {
+interface CloudProps {}
+class CloudUpload extends React.Component<CloudProps, CloudState> {
   static contextType = UserContext;
-  constructor(props: {}) {
+  constructor(props: CloudProps) {
     super(props);
     var today = new Date(),
       dateCurrent =
@@ -134,7 +136,9 @@ class CloudUpload extends React.Component<{}, CloudState> {
             thumbnail: res.info.thumbnail_url,
             fileTag: res.info.tags,
           });
-          this.postMedia();
+          setTimeout(() => {
+            this.postMedia();
+          }, 500);
         }
       }
     );

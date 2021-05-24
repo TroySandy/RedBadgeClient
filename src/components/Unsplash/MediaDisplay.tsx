@@ -9,21 +9,32 @@ import {
   Paper,
   Card,
   CardActionArea,
-  CardActions,
   CardContent,
   CardMedia,
   Button,
   Typography,
   Link,
   Modal,
-  FormControl,
   FormControlLabel,
   styled,
   withStyles,
   Backdrop,
   Fade,
   Avatar,
+  createStyles,
 } from "@material-ui/core";
+
+const styles = {
+  card: {
+    width: "200px",
+    borderRadius: "25px",
+    backgroundColor: "#424242",
+  },
+
+  text: {
+    color: "#fff",
+  },
+};
 
 const marks = [
   {
@@ -48,8 +59,8 @@ const marks = [
   },
 ];
 
-interface IMediaState {
-  imageResult: any;
+export interface IMediaState {
+  unsplashResults: any;
   searchInput: string;
   openComment: boolean;
   openModal: boolean;
@@ -59,18 +70,21 @@ interface IMediaState {
   rating: number;
   favorite: true;
   mediumId: string;
-  blurhash: string;
-  urls: string[];
-  user: string[];
+  blur_hash: string;
+  url_thumb: string;
+  url_small: string;
+  url_reg: string;
+  url_raw: string;
   image: string;
   thumbnail: string;
-  artist: string;
-  artist_image: string;
-  portfolio: string;
+  artist_name: string;
+  artist_img: string;
+  portfolio_url: string;
 }
 
 interface IMediaProps {
-  imageResult: any;
+  classes?: any;
+  unsplashResults: any;
 }
 
 class MediaDisplay extends React.Component<IMediaProps, IMediaState> {
@@ -78,7 +92,7 @@ class MediaDisplay extends React.Component<IMediaProps, IMediaState> {
   constructor(props: IMediaProps) {
     super(props);
     this.state = {
-      imageResult: [],
+      unsplashResults: [],
       searchInput: "",
       openComment: false,
       openModal: false,
@@ -88,41 +102,44 @@ class MediaDisplay extends React.Component<IMediaProps, IMediaState> {
       rating: 3,
       favorite: true,
       mediumId: "",
-      blurhash: "",
-      urls: [],
-      user: [],
+      blur_hash: "",
+      url_thumb: "",
+      url_small: "",
+      url_reg: "",
+      url_raw: "",
       image: "",
       thumbnail: "",
-      artist: "",
-      artist_image: "",
-      portfolio: "",
+      artist_name: "",
+      artist_img: "",
+      portfolio_url: "",
     };
   }
-  handleOpenModal(e: React.BaseSyntheticEvent) {
+  handleOpenModal() {
     this.setState({
       openModal: true,
     });
   }
 
-  handleOpenComment(e: React.BaseSyntheticEvent) {
+  handleOpenComment() {
     this.setState({
-      openComment: true,
+      openModal: true,
     });
-    console.log(this.state.image, this.state.thumbnail, this.state.artist);
-
     fetch("http://localhost:4000/media/upload", {
       method: "POST",
       body: JSON.stringify({
         private: this.state.private,
         userId: this.state.userId,
-        blurhash: this.state.blurhash,
-        urls: this.state.urls,
-        user: this.state.user,
+        blur_hash: this.state.blur_hash,
+        url_thumb: this.state.url_thumb,
+        url_small: this.state.url_small,
+        url_reg: this.state.url_reg,
+        url_raw: this.state.url_raw,
         image: this.state.image,
         thumbnail: this.state.thumbnail,
-        artist: this.state.artist,
-        artist_image: this.state.artist_image,
-        portfolio: this.state.portfolio,
+        artist_name: this.state.artist_name,
+        artist_img: this.state.artist_img,
+        portfolio_url: this.state.portfolio_url,
+        favorite: this.state.favorite,
       }),
       headers: {
         "Content-Type": "application/json",
@@ -133,7 +150,7 @@ class MediaDisplay extends React.Component<IMediaProps, IMediaState> {
         console.log(res);
 
         if (res.status !== 201) {
-          console.log("File not Uploaded", res.status);
+          console.log("File not Uploaded", res);
         } else {
           return res.json();
         }
@@ -142,9 +159,6 @@ class MediaDisplay extends React.Component<IMediaProps, IMediaState> {
         console.log("Media", data);
         this.setState({
           mediumId: data.newMedia.id,
-          blurhash: data.newMedia.blur_hash,
-          urls: data.newMedia.urls,
-          user: data.newMedia.user,
         });
       });
   }
@@ -172,7 +186,6 @@ class MediaDisplay extends React.Component<IMediaProps, IMediaState> {
 
   postComment(e: React.BaseSyntheticEvent) {
     e.preventDefault();
-    console.log("giggity");
 
     fetch("http://localhost:4000/comments/create", {
       method: "POST",
@@ -191,7 +204,7 @@ class MediaDisplay extends React.Component<IMediaProps, IMediaState> {
     })
       .then((res) => {
         if (res.status !== 201) {
-          console.log("File not Uploaded", res.status);
+          console.log("Comment not Uploaded", res.status);
         } else {
           return res.json();
         }
@@ -210,128 +223,53 @@ class MediaDisplay extends React.Component<IMediaProps, IMediaState> {
   }
 
   componentDidMount() {
-    // console.log(this.props, "image");
+    console.log(this.props, "image");
     this.setState({
-      image: this.props.imageResult.urls.regular,
-      thumbnail: this.props.imageResult.urls.thumb,
-      artist: this.props.imageResult.user.name,
-      artist_image: this.props.imageResult.user.profile_image.small,
-      blurhash: this.props.imageResult.blurhash,
-      portfolio: this.props.imageResult.user.portfolio_url,
+      image: this.props.unsplashResults.links.download,
+      thumbnail: this.props.unsplashResults.urls.thumb,
+      artist_name: this.props.unsplashResults.user.name,
+      artist_img: this.props.unsplashResults.user.profile_image.small,
+      blur_hash: this.props.unsplashResults.blur_hash,
+      portfolio_url: this.props.unsplashResults.user.portfolio_url,
       userId: this.context.user.id,
-      urls: this.props.imageResult.urls,
-      user: this.props.imageResult.user,
+      url_thumb: this.props.unsplashResults.urls.thumb,
+      url_small: this.props.unsplashResults.urls.small,
+      url_reg: this.props.unsplashResults.urls.full,
+      url_raw: this.props.unsplashResults.urls.raw,
     });
   }
 
   render() {
+    const { classes } = this.props;
     return (
       <Grid item xs={12} sm={4} md={3} lg={2}>
-        <Paper elevation={20} variant="outlined">
-          <Card>
-            <CardActionArea>
-              <CardMedia>
-                <img src={this.state.thumbnail} />
-              </CardMedia>
-              <CardContent>
-                <Typography gutterBottom variant="h5" component="h4">
-                  {this.state.artist}
-                </Typography>
-              </CardContent>
-            </CardActionArea>
-            <CardActions>
-              <Button
-                size="small"
-                variant="outlined"
-                onClick={(e) => this.handleOpenComment(e)}
-                color="primary"
-              >
-                Save Photo
-              </Button>
-            </CardActions>
-
-            <CardActions>
-              <Button
-                size="small"
-                variant="outlined"
-                onClick={(e) => this.handleOpenModal(e)}
-                color="primary"
-              >
-                More Info
-              </Button>
-            </CardActions>
-          </Card>
-        </Paper>
-        <Modal
-          open={this.state.openComment}
-          onClose={this.handleClose}
-          aria-labelledby="Leave A Comment"
-          aria-describedby="Leave A Comment"
+        <Card
+          raised
+          onClick={
+            !this.context.isAuth
+              ? (e) => this.handleOpenModal()
+              : (e) => this.handleOpenComment()
+          }
+          className={classes.card}
         >
-          <Fade in={this.state.openComment}>
-            <Container maxWidth="md">
-              <Paper>
-                <form onSubmit={(e) => this.postComment(e)}>
-                  <Paper>
-                    <TextareaAutosize
-                      value={this.state.comment}
-                      placeholder="Leave a comment"
-                      name="comment"
-                      onChange={(e) => this.handleChange(e)}
-                    />
-                  </Paper>
-                  <Paper>
-                    <Slider
-                      aria-labelledby="Rate this image!"
-                      valueLabelDisplay="on"
-                      defaultValue={3}
-                      step={0.25}
-                      onChange={(e) => this.handleChange(e)}
-                      onChangeCommitted={(e) => this.handleChange(e)}
-                      marks={marks}
-                      name="rating"
-                      max={5}
-                    />
-                  </Paper>
-                  <Paper>
-                    <Button type="submit" variant="contained" color="primary">
-                      Submit Comment
-                    </Button>
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={this.state.favorite}
-                          onChange={(e) => this.handleSwitch(e)}
-                          name="favorite"
-                          title="Favorite"
-                          inputProps={{
-                            "aria-label": "favorite checkbox",
-                          }}
-                        />
-                      }
-                      label="Favorite"
-                    />
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={this.state.private}
-                          onChange={(e) => this.handleSwitch(e)}
-                          color="primary"
-                          name="private"
-                          title="Private"
-                          inputProps={{
-                            "aria-label": "private checkbox",
-                          }}
-                        />
-                      }
-                      label="Make Private"
-                    />
-                  </Paper>
-                </form>
+          <CardActionArea>
+            <CardMedia>
+              <Paper elevation={10}>
+                <img src={this.state.thumbnail} />
               </Paper>
-            </Container>
-          </Fade>
-        </Modal>
+            </CardMedia>
+            <CardContent>
+              <Typography
+                gutterBottom
+                variant="h5"
+                component="h4"
+                className={classes.text}
+              >
+                {this.state.artist_name}
+              </Typography>
+            </CardContent>
+          </CardActionArea>
+        </Card>
         <Modal
           aria-labelledby="transition-modal-title"
           aria-describedby="transition-modal-description"
@@ -347,24 +285,97 @@ class MediaDisplay extends React.Component<IMediaProps, IMediaState> {
             <Container>
               <Paper>
                 <Avatar
-                  alt={this.state.artist}
-                  src={this.props.imageResult.user.profile_image.small}
+                  alt={this.state.artist_name}
+                  src={this.props.unsplashResults.user.profile_image.small}
                 />
-                <Link href={this.state.portfolio} target="_blank">
+                <Link href={this.state.portfolio_url} target="_blank">
                   <Typography>Artist Porfolio</Typography>
                 </Link>
-                <Link href={this.props.imageResult.urls.full} target="_blank">
+                <Link
+                  href={this.props.unsplashResults.urls.full}
+                  target="_blank"
+                >
                   <Typography>Full Image Download</Typography>
                 </Link>
-                <Link href={this.props.imageResult.urls.raw} target="_blank">
+                <Link
+                  href={this.props.unsplashResults.urls.raw}
+                  target="_blank"
+                >
                   <Typography>Raw Image Download</Typography>
                 </Link>
                 <Link
-                  href={this.props.imageResult.urls.regular}
+                  href={this.props.unsplashResults.urls.regular}
                   target="_blank"
                 >
                   <Typography>Image Download</Typography>
                 </Link>
+                {!this.context.isAuth ? (
+                  <></>
+                ) : (
+                  <Paper>
+                    <form onSubmit={(e) => this.postComment(e)}>
+                      <Paper>
+                        <TextareaAutosize
+                          value={this.state.comment}
+                          placeholder="Leave a comment"
+                          name="comment"
+                          onChange={(e) => this.handleChange(e)}
+                        />
+                      </Paper>
+                      <Paper>
+                        <Slider
+                          aria-labelledby="Rate this image!"
+                          valueLabelDisplay="on"
+                          defaultValue={3}
+                          step={0.25}
+                          onChange={(e) => this.handleChange(e)}
+                          onChangeCommitted={(e) => this.handleChange(e)}
+                          marks={marks}
+                          name="rating"
+                          max={5}
+                        />
+                      </Paper>
+                      <Paper>
+                        <Button
+                          type="submit"
+                          variant="contained"
+                          color="primary"
+                        >
+                          <Typography>Submit Comment</Typography>
+                        </Button>
+                        <FormControlLabel
+                          control={
+                            <Switch
+                              checked={this.state.favorite}
+                              onChange={(e) => this.handleSwitch(e)}
+                              name="favorite"
+                              title="Favorite"
+                              inputProps={{
+                                "aria-label": "favorite checkbox",
+                              }}
+                            />
+                          }
+                          label="Favorite"
+                        />
+                        <FormControlLabel
+                          control={
+                            <Switch
+                              checked={this.state.private}
+                              onChange={(e) => this.handleSwitch(e)}
+                              color="primary"
+                              name="private"
+                              title="Private"
+                              inputProps={{
+                                "aria-label": "private checkbox",
+                              }}
+                            />
+                          }
+                          label="Make Private"
+                        />
+                      </Paper>
+                    </form>
+                  </Paper>
+                )}
               </Paper>
             </Container>
           </Fade>
@@ -374,4 +385,4 @@ class MediaDisplay extends React.Component<IMediaProps, IMediaState> {
   }
 }
 
-export default MediaDisplay;
+export default withStyles(styles)(MediaDisplay);

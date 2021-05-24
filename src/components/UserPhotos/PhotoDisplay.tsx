@@ -1,20 +1,36 @@
 import React from "react";
 import UserContext from "../../UserContext/UserContext";
-import Tile from "./Tile";
-import AwesomeSlider from "react-awesome-slider";
-import { Container, Link, Paper } from "@material-ui/core";
+import { Container, Grid, Paper } from "@material-ui/core";
+import { NavLink, Redirect } from "react-router-dom";
 
-interface IGallery {
-  userMedia: string[];
-  numOfImages: number | null;
+import Photos from "./Photos";
+
+interface IPhotoDisp {
+  userMedia: UserMedia[];
 }
-export default class Gallery extends React.Component<{}, IGallery> {
+interface UserMedia {
+  artist_name: string;
+  artist_img: string;
+  blur_hash: string;
+  comments: string[];
+  id: string;
+  image: string;
+  url_reg: string;
+  portfolio_url: string;
+  private: boolean;
+  favorite: boolean;
+  thumbnail: string;
+  url_raw: string;
+  url_thumb: string;
+  url_small: string;
+}
+
+export default class PhotoDisplay extends React.Component<{}, IPhotoDisp> {
   static contextType = UserContext;
   constructor(props: {}) {
     super(props);
     this.state = {
       userMedia: [],
-      numOfImages: null,
     };
   }
 
@@ -38,9 +54,8 @@ export default class Gallery extends React.Component<{}, IGallery> {
         console.log(data.Media);
         this.setState({
           userMedia: media,
-          numOfImages: media.length,
         });
-        console.log(this.state.userMedia);
+        // console.log(this.state.userMedia);
       });
   }
 
@@ -48,17 +63,12 @@ export default class Gallery extends React.Component<{}, IGallery> {
     return (
       <>
         <Container>
-          <Paper>
-            {this.state.userMedia.map((image: any) => {
-              return (
-                // <Paper key={image.id}>
-                // <Link href="" target="_blank">
-                <Tile image={image} />
-                // </Link>
-                // </Paper>
-              );
+          <Grid container spacing={1} item>
+            {this.state.userMedia.map((image: UserMedia) => {
+              return <Photos Media={image} />;
             })}
-          </Paper>
+          </Grid>
+          {!this.context.isAuth ? <Redirect to="/" /> : null}
         </Container>
       </>
     );

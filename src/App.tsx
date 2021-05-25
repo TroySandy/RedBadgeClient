@@ -11,7 +11,7 @@ import DisplayComments from "./components/CommentDisplay/DisplayComments";
 import UserContext from "./UserContext/UserContext";
 import PhotoDisplay from "./components/UserPhotos/PhotoDisplay";
 import CollageDisplay from "./components/Unsplash/CollageDisplay";
-
+import "bootstrap/dist/css/bootstrap.min.css";
 class App extends React.Component {
   render() {
     return (

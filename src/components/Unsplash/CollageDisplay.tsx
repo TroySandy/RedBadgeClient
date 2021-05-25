@@ -2,10 +2,15 @@ import React from "react";
 import Container from "react-bootstrap/Container";
 import Card from "react-bootstrap/Card";
 import UserContext from "../../UserContext/UserContext";
-import { faHeart, faSave } from "@fortawesome/free-solid-svg-icons";
+import config from "../../config";
+import {
+  faHeart,
+  faSave,
+  faHeartBroken,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Modal, Row, Col, Form, Button } from "react-bootstrap";
-
+import { Redirect } from "react-router-dom";
 interface Iprops {
   location: {
     state: {
@@ -17,11 +22,13 @@ interface Iprops {
 interface CDState {
   media: any;
   comment: string;
+  comments: string[];
   rating: 3;
   favorite: boolean;
   private: boolean;
   openModal: boolean;
   openComment: boolean;
+  redirect: boolean;
   userId: string;
   mediumId: string;
   blur_hash: string;
@@ -43,8 +50,9 @@ class CollageDisplay extends React.Component<Iprops, CDState> {
     this.state = {
       media: [],
       comment: "",
+      comments: [],
       rating: 3,
-      favorite: true,
+      favorite: false,
       private: false,
       openModal: false,
       openComment: false,
@@ -60,6 +68,7 @@ class CollageDisplay extends React.Component<Iprops, CDState> {
       artist_name: "",
       artist_img: "",
       portfolio_url: "",
+      redirect: false,
     };
   }
   handleOpenModal = () => {
@@ -70,7 +79,7 @@ class CollageDisplay extends React.Component<Iprops, CDState> {
 
   postPhoto(e: React.BaseSyntheticEvent) {
     e.preventDefault();
-    fetch("http://localhost:4000/media/upload", {
+    fetch(`${config.REACT_APP_SERVER_API_URL}/media/upload`, {
       method: "POST",
       body: JSON.stringify({
         private: this.state.private,
@@ -106,6 +115,7 @@ class CollageDisplay extends React.Component<Iprops, CDState> {
         this.setState({
           mediumId: data.newMedia.id,
           openComment: true,
+          openModal: true,
         });
       });
   }
@@ -122,11 +132,12 @@ class CollageDisplay extends React.Component<Iprops, CDState> {
   onHide = () => {
     this.setState({
       openModal: false,
+      redirect: true,
     });
   };
 
   postComment(e: React.BaseSyntheticEvent) {
-    fetch("http://localhost:4000/comments/create", {
+    fetch(`${config.REACT_APP_SERVER_API_URL}/comments/create`, {
       method: "POST",
       body: JSON.stringify({
         comment: this.state.comment,
@@ -169,7 +180,6 @@ class CollageDisplay extends React.Component<Iprops, CDState> {
       url_reg: this.props.location.state.image.urls.regular,
       url_raw: this.props.location.state.image.urls.raw,
       image: this.props.location.state.image.urls.full,
-      // thumbnail: this.props.location.state.image,
       artist_name: this.props.location.state.image.user.name,
       artist_img: this.props.location.state.image.user.profile_image.large,
       portfolio_url: this.props.location.state.image.user.portfolio_url,
@@ -199,9 +209,9 @@ class CollageDisplay extends React.Component<Iprops, CDState> {
               <a href={this.state.portfolio_url} target="_blank">
                 Artist Portfolio
               </a>
-              {/* <Card.Text>Last updated 3 mins ago</Card.Text> */}
             </Card.ImgOverlay>
           </Card>
+          {this.state.redirect ? <Redirect to="/" /> : null}
         </Container>
         <Modal
           aria-labelledby="contained-modal-title-vcenter"
@@ -209,7 +219,6 @@ class CollageDisplay extends React.Component<Iprops, CDState> {
           centered
           show={this.state.openModal}
           backdrop
-          onClick={this.onHide}
         >
           <Modal.Title id="commentTitle"></Modal.Title>
 
@@ -217,34 +226,40 @@ class CollageDisplay extends React.Component<Iprops, CDState> {
             <Container>
               <Row>
                 <Col>
-                  {/* <Image
+                  <img
                     src={this.state.artist_img}
                     width={150}
                     height={150}
-                    roundedCircle
-                  /> */}
+                    className="profilePic"
+                  />
                 </Col>
                 <Col>
                   <p>{this.state.artist_name}</p>
-                  <a href={this.state.portfolio_url} target="_blank">
-                    Artist Portfolio
-                  </a>
+                  {this.state.portfolio_url ? (
+                    <a
+                      href={this.state.portfolio_url}
+                      target="_blank"
+                      onClick={this.onHide}
+                    >
+                      Artist Portfolio
+                    </a>
+                  ) : null}
+
                   <br />
-                  <a href={this.state.image} target="_blank">
+                  <a
+                    href={this.state.image}
+                    onClick={this.onHide}
+                    target="_blank"
+                  >
                     Image Download
                   </a>
                 </Col>
               </Row>
-              {this.context.isAuth ? (
-                <a onClick={(e: React.MouseEvent) => this.postPhoto(e)}>
-                  <FontAwesomeIcon icon={faSave} className="fa-5x" />
-                  Save to your page
-                </a>
-              ) : null}
+
               {this.state.openComment ? (
                 <Container>
                   <Row>
-                    <Col xs={12} md={8}>
+                    <Col xs={6}>
                       Rating
                       <Form.Control
                         type="range"
@@ -257,7 +272,7 @@ class CollageDisplay extends React.Component<Iprops, CDState> {
                         onChange={(e) => this.handleChange(e)}
                       />
                     </Col>
-                    <Col xs={3} md={2}>
+                    <Col xs={6}>
                       <Form.Check
                         type="switch"
                         name="favorite"
@@ -265,8 +280,7 @@ class CollageDisplay extends React.Component<Iprops, CDState> {
                         onClick={(e) => this.handleChange(e)}
                         label="Favorite"
                       />
-                    </Col>
-                    <Col xs={3} md={2}>
+
                       <Form.Check
                         type="switch"
                         name="private"

@@ -6,10 +6,13 @@ import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
+import config from "../../config";
+import Card from "react-bootstrap/Card";
+
 interface ISDisplay {
   review: string;
   favorite: boolean;
-  rating: number | string;
+  rating: number;
   editing: boolean;
   id: string;
   private: boolean;
@@ -31,7 +34,7 @@ class Comments extends React.Component<IComment, ISDisplay> {
     super(props);
     this.state = {
       review: "",
-      favorite: false,
+      favorite: true,
       rating: 3,
       editing: false,
       id: "",
@@ -40,11 +43,11 @@ class Comments extends React.Component<IComment, ISDisplay> {
     };
   }
 
-  handleOpenModal = () => {
+  handleOpenModal(e: React.MouseEventHandler<HTMLButtonElement>) {
     this.setState({
       openModal: true,
     });
-  };
+  }
 
   handleChange(e: React.BaseSyntheticEvent) {
     this.setState((prevstate) => ({
@@ -55,7 +58,7 @@ class Comments extends React.Component<IComment, ISDisplay> {
 
   deleteComment(e: React.BaseSyntheticEvent) {
     console.log("fired");
-    fetch("http://localhost:4000/comments/", {
+    fetch(`${config.REACT_APP_SERVER_API_URL}/comments/`, {
       method: "DELETE",
       body: JSON.stringify({ id: this.state.id }),
       headers: {
@@ -68,7 +71,7 @@ class Comments extends React.Component<IComment, ISDisplay> {
         this.setState({
           editing: false,
           review: "",
-          rating: "",
+          rating: 3,
         })
       )
       .catch((err) => console.log(err));
@@ -76,7 +79,7 @@ class Comments extends React.Component<IComment, ISDisplay> {
 
   updateComment(e: React.BaseSyntheticEvent) {
     e.preventDefault();
-    fetch("http://localhost:4000/comments/", {
+    fetch(`${config.REACT_APP_SERVER_API_URL}/comments/`, {
       method: "PUT",
       body: JSON.stringify({
         comment: this.state.review,
@@ -98,14 +101,49 @@ class Comments extends React.Component<IComment, ISDisplay> {
         }
       })
       .then((data) => {
-        console.log(data);
+        console.log(data.updatedComment[1][0]);
         this.setState({
           openModal: false,
         });
       });
   }
 
-  componentWillMount() {
+  // fetchComment = () => {
+  //   // console.log(this.state.id);
+
+  //   fetch("http://localhost:4000/comment/comment", {
+  //     method: "POST",
+  //     body: JSON.stringify({
+  //       id: this.state.id,
+  //     }),
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       Authorization: `Bearer ${this.context.token}`,
+  //     },
+  //   })
+  //     .then((res) => {
+  //       if (res.status !== 201) {
+  //         console.log("Files not found", res.status);
+  //       } else {
+  //         return res.json();
+  //       }
+  //     })
+  //     .then((data) => {
+  //       console.log(data);
+  //       //   this.setState({
+  //       //     review: "",
+  //       // favorite: true,
+  //       // rating: 3,
+  //       // editing: false,
+  //       // id: "",
+  //       // private: false,
+  //       //   });
+  //     });
+  // };
+
+  componentDidMount() {
+    console.log(this.props.comment);
+
     this.setState({
       review: this.props.comment.comment,
       favorite: this.props.comment.favorite,
@@ -113,24 +151,28 @@ class Comments extends React.Component<IComment, ISDisplay> {
       openModal: false,
       id: this.props.comment.id,
     });
-    console.log(this.state.openModal);
+    // setTimeout(() => {
+    //   this.fetchComment();
+    // }, 500);
   }
   render() {
     return (
       <>
         <Container fluid>
-          <p>{this.state.review}</p>
-          <Col xs={12} md={8}>
-            Rating
-            <Form.Control
-              type="range"
-              min="0"
-              max="5"
-              name="rating"
-              id="rating"
-              value={this.state.rating}
-            />
-          </Col>
+          <Card
+            style={{ width: "18rem" }}
+            bg="dark"
+            border="light"
+            text="white"
+          >
+            <Card.Body onClick={(e: any) => this.handleOpenModal(e)}>
+              <Card.Title>{this.state.rating} out of 5</Card.Title>
+              <Card.Text>{this.state.review}</Card.Text>
+              <Button variant="outline-light" size="sm">
+                Update Comment
+              </Button>
+            </Card.Body>
+          </Card>
         </Container>
         <Modal
           aria-labelledby="contained-modal-title-vcenter"
@@ -138,7 +180,7 @@ class Comments extends React.Component<IComment, ISDisplay> {
           centered
           show={this.state.openModal}
         >
-          <Modal.Title id="commentTitle">Leave a Comment</Modal.Title>
+          <Modal.Title id="commentTitle">Update Your Comment</Modal.Title>
 
           <Modal.Body className="show-grid" id="commentBody">
             <Container>
@@ -182,15 +224,18 @@ class Comments extends React.Component<IComment, ISDisplay> {
                     type="textarea"
                     custom
                     size="lg"
-                    name="comment"
-                    id="comment"
+                    name="review"
+                    id="review"
                     onChange={(e) => this.handleChange(e)}
                   />
                 </Col>
                 <Col xs={6} md={4}></Col>
                 <Col xs={3} md={2}>
                   <Button onClick={(e) => this.updateComment(e)}>
-                    Post A Comment
+                    Edit Comment
+                  </Button>
+                  <Button onClick={(e) => this.deleteComment(e)}>
+                    Delete Comment
                   </Button>
                 </Col>
               </Row>

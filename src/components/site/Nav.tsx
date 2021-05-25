@@ -1,30 +1,30 @@
 import React from "react";
 import UserContext from "../../UserContext/UserContext";
-import {
-  Container,
-  Paper,
-  Menu,
-  MenuItem,
-  Typography,
-  IconButton,
-  AppBar,
-  Toolbar,
-  Fab,
-  withStyles,
-} from "@material-ui/core";
-import MenuIcon from "@material-ui/icons/Menu";
-import { BrowserRouter as Redirect, NavLink } from "react-router-dom";
-import Form from "react-bootstrap/Form";
-import FormControl from "react-bootstrap/FormControl";
 import Button from "react-bootstrap/Button";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/NavBar";
+import "./Nav.css";
+import config from "../../config";
 
 interface IMenuProps {}
 
 interface IMenuState {
-  anchorEl: null | HTMLElement;
-  isAuth: boolean;
+  private: boolean;
+  userId: string;
+  comment: string;
+  rating: number;
+  favorite: true;
+  mediumId: string;
+  blur_hash: string;
+  url_thumb: string;
+  url_small: string;
+  url_reg: string;
+  url_raw: string;
+  image: string;
+  thumbnail: string;
+  artist_name: string;
+  artist_img: string;
+  portfolio_url: string;
 }
 
 class NavBar extends React.Component<{}, IMenuState> {
@@ -32,38 +32,174 @@ class NavBar extends React.Component<{}, IMenuState> {
   constructor(props: {}) {
     super(props);
     this.state = {
-      anchorEl: null,
-      isAuth: false,
+      userId: "",
+      comment: "",
+      rating: 3,
+      mediumId: "",
+      private: false,
+      favorite: true,
+      blur_hash: "",
+      url_thumb: "",
+      url_small: "",
+      url_reg: "",
+      url_raw: "",
+      image: "",
+      thumbnail: "",
+      artist_name: "",
+      artist_img: "",
+      portfolio_url: "",
     };
   }
 
-  handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    this.setState({
-      anchorEl: e.currentTarget,
-    });
-  };
   logOut(e: React.BaseSyntheticEvent) {
     this.context.setToken(null);
   }
 
-  handleClose = () => {
-    this.setState({
-      anchorEl: null,
-    });
+  postMedia = () => {
+    console.log(this.context.user.id);
+
+    fetch(`${config.REACT_APP_SERVER_API_URL}/media/upload`, {
+      method: "POST",
+      body: JSON.stringify({
+        private: this.state.private,
+        favorite: this.state.favorite,
+        blur_hash: this.state.blur_hash,
+        url_thumb: this.state.url_thumb,
+        url_small: this.state.url_small,
+        url_reg: this.state.url_reg,
+        url_raw: this.state.url_raw,
+        image: this.state.image,
+        thumbnail: this.state.thumbnail,
+        artist_name: this.state.artist_name,
+        artist_img: this.state.artist_img,
+        portfolio_url: this.state.portfolio_url,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${this.context.token}`,
+      },
+    })
+      .then((res) => {
+        console.log(res);
+
+        if (res.status !== 201) {
+          console.log("File not Uploaded", res.status);
+        } else {
+          return res.json();
+        }
+      })
+      .then((data) => {
+        console.log("Media", data);
+        this.setState({
+          private: false,
+          favorite: true,
+          blur_hash: "",
+          url_thumb: "",
+          url_small: "",
+          url_reg: "",
+          url_raw: "",
+          image: "",
+          thumbnail: "",
+          artist_name: "",
+          artist_img: "",
+          portfolio_url: "",
+          userId: this.context.user.id,
+        });
+      });
   };
+
+  handleChange(e: React.BaseSyntheticEvent) {
+    this.setState((prevstate) => ({
+      ...prevstate,
+      [e.target.name]: e.target.value as Pick<IMenuState, keyof IMenuState>,
+    }));
+  }
+
+  componentDidMount() {
+    this.setState({
+      private: false,
+      favorite: true,
+      blur_hash: "",
+      url_thumb: "",
+      url_small: "",
+      url_reg: "",
+      url_raw: "",
+      image: "",
+      thumbnail: "",
+      artist_name: "",
+      artist_img: "",
+      portfolio_url: "",
+      userId: this.context.user.id,
+    });
+
+    console.log(this.state.userId, this.context.token);
+    (window as any).cloudinary.applyUploadWidget(
+      document.getElementById("cloudBtn"),
+      {
+        cloud_name: "wd1150photohost",
+        upload_preset: "upload1",
+        sources: ["local", "url", "camera", "image_search"],
+        tags: [this.state.userId],
+        multiple: true,
+        cropping: true,
+        croppingShowDimensions: true,
+        showPoweredBy: true,
+        styles: {
+          palette: {
+            window: "#161616",
+            sourceBg: "#000000",
+            windowBorder: "#8E9FBF",
+            tabIcon: "#FFFFFF",
+            inactiveTabIcon: "#8E9FBF",
+            menuIcons: "#2AD9FF",
+            action: "#336BFF",
+            inProgess: "#00BFFF",
+            complete: "#33ff00",
+            error: "#EA2727",
+            textDark: "#000000",
+            textLight: "#FFFFFF",
+          },
+          fonts: {
+            default: null,
+            "'Kalam', cursive": {
+              url: "https://fonts.googleapis.com/css?family=Kalam",
+              active: true,
+            },
+          },
+        },
+      },
+      (error: any, res: any) => {
+        console.log(res);
+        if (res.event !== "success") {
+          console.log(this.state.userId, "no file");
+        } else {
+          this.setState({
+            url_thumb: res.info.thumbnail_url,
+            image: res.info.secure_url,
+            artist_name: this.context.user.username,
+            userId: this.context.user.id,
+            url_reg: res.info.url,
+          });
+          setTimeout(() => {
+            this.postMedia();
+          }, 300);
+        }
+      }
+    );
+  }
 
   render() {
     return (
       <>
-        <Navbar bg="dark" variant="dark" sticky="top" expand="sm">
-          <Navbar.Brand href="/">Navbar</Navbar.Brand>
+        <Navbar bg="dark" variant="dark" sticky="top" expand="md">
+          <Navbar.Brand href="/">PhotoWall</Navbar.Brand>
           <Nav className="mr-auto">
-            <Nav.Link href="/stream">PhotoWall</Nav.Link>
             {!this.context.isAuth ? null : (
               <>
-                {" "}
-                <Nav.Link href="/media">Media</Nav.Link>
-                <Nav.Link href="/upload">Upload</Nav.Link>
+                <Nav.Link href="/media">Saved Photos</Nav.Link>
+                <span className="annoying">
+                  <Button id="cloudBtn">Upload Media</Button>
+                </span>
               </>
             )}
             {!this.context.user.isAdmin ? null : (

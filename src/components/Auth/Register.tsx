@@ -2,7 +2,7 @@ import React from "react";
 import UserContext from "../../UserContext/UserContext";
 import "./Register.css";
 import { Redirect } from "react-router-dom";
-import Row from "react-bootstrap/Row";
+import config from "../../config";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
@@ -36,7 +36,7 @@ class Register extends React.Component<{}, RegisterState> {
 
   registerFetch = (e: React.BaseSyntheticEvent) => {
     e.preventDefault();
-    fetch(`http://localhost:4000/user/register`, {
+    fetch(`${config.REACT_APP_SERVER_API_URL}/user/register`, {
       method: "POST",
       body: JSON.stringify({
         firstName: this.state.firstName,

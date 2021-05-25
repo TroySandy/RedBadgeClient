@@ -3,6 +3,7 @@ import Container from "react-bootstrap/Container";
 import Button from "react-bootstrap/Button";
 import { Redirect } from "react-router-dom";
 import UserContext from "../../UserContext/UserContext";
+import config from "../../config";
 interface IAdminState {
   userInfo: any;
 }
@@ -16,7 +17,7 @@ class AdminTable extends React.Component<{}, IAdminState> {
     };
   }
   fetchUser = () => {
-    fetch("http://localhost:4000/admin/users", {
+    fetch(`${config.REACT_APP_SERVER_API_URL}/admin/users`, {
       headers: {
         "Content-Type": "application/json",
       },
@@ -87,7 +88,7 @@ class UserDelete extends React.Component<userprop, userstate> {
   deleteUser(e: React.BaseSyntheticEvent) {
     console.log(this.state.id);
 
-    fetch("http://localhost:4000/user/admin", {
+    fetch(`${config.REACT_APP_SERVER_API_URL}/user/admin`, {
       method: "DELETE",
       body: JSON.stringify({
         id: this.state.id,
@@ -159,7 +160,7 @@ class MediaDelete extends React.Component<mediaprop, mediastate> {
   deleteMedia(e: React.BaseSyntheticEvent) {
     console.log(this.state.id);
 
-    fetch("http://localhost:4000/media/admin", {
+    fetch(`${config.REACT_APP_SERVER_API_URL}/media/admin`, {
       method: "DELETE",
       body: JSON.stringify({
         id: this.state.id,
@@ -226,7 +227,7 @@ class CommentDelete extends React.Component<commentprop, commentstate> {
   }
 
   deleteComment(e: React.BaseSyntheticEvent) {
-    fetch("http://localhost:4000/comment/admin", {
+    fetch(`${config.REACT_APP_SERVER_API_URL}/comment/admin`, {
       method: "DELETE",
       body: JSON.stringify({
         id: this.state.id,

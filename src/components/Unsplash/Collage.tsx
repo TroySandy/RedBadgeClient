@@ -3,9 +3,8 @@ import { createApi } from "unsplash-js";
 import InfiniteScroll from "react-infinite-scroll-component";
 import "./Collage.css";
 import Container from "react-bootstrap/Container";
-import MediaDisplay from "./MediaDisplay";
 import { Link } from "react-router-dom";
-
+require("dotenv").config();
 interface CollageState {
   images: any;
   loaded: boolean;
@@ -14,7 +13,7 @@ interface CollageState {
 const api = createApi({
   // Don't forget to set your access token here!
   // See https://unsplash.com/developers
-  accessKey: "QrZ_4CjnXpZU7ZOT1EJBrOjpWbgZyRvfZQ6QfutowmE",
+  accessKey: `${process.env.REACT_APP_UNSPLASH_APIKEY}`,
 });
 
 class Collage extends React.Component<{}, CollageState> {

@@ -1,0 +1,7 @@
+.registerBG {
+  background-image: url("../../assets/TreesBG.jpg") !important;
+  background-position-y: 50%;
+  background-position-x: 40%;
+  width: 100vw;
+  height: 100vh;
+}

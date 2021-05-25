@@ -1,8 +1,9 @@
-import React, { Component, BaseSyntheticEvent } from "react";
+import React from "react";
 import UserContext from "../../UserContext/UserContext";
 import { Redirect } from "react-router-dom";
-import Tree from "../../assets/TreesBG.jpg";
+import "./Login.css";
 import Container from "react-bootstrap/Container";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
@@ -12,11 +13,12 @@ interface ILoginState {
   username: string;
   password: string;
   showPassword: boolean;
+  validated: boolean;
 }
 interface ILoginProps {
   classes: any;
 }
-class Login extends Component<ILoginProps, ILoginState> {
+class Login extends React.Component<ILoginProps, ILoginState> {
   static contextType = UserContext;
   constructor(props: ILoginProps) {
     super(props);
@@ -24,6 +26,7 @@ class Login extends Component<ILoginProps, ILoginState> {
       username: "",
       password: "",
       showPassword: false,
+      validated: false,
     };
   }
 
@@ -60,48 +63,49 @@ class Login extends Component<ILoginProps, ILoginState> {
   }
 
   render() {
-    const { classes } = this.props;
     return (
-      <Container fluid>
-        <Container fluid>
-          <Form onSubmit={(e) => this.logIn(e)}>
+      <Container fluid className="loginBG">
+        <Container className="loginContainer">
+          <Form onSubmit={(e) => this.logIn(e)} className="loginForm">
             <Form.Group as={Row} controlId="formHorizontalUserName">
-              <Form.Label column sm={2}>
-                Username
-              </Form.Label>
-              <Col sm={10}>
+              <Col lg={{ span: 4, offset: 4 }}>
                 <Form.Control
                   type="text"
                   placeholder="Username"
                   name="username"
+                  className="username"
                   onChange={(e) => this.handleChange(e)}
                 />
               </Col>
             </Form.Group>
 
             <Form.Group as={Row} controlId="formHorizontalPassword">
-              <Form.Label column sm={2}>
-                Password
-              </Form.Label>
-              <Col sm={10}>
+              <Col lg={{ span: 4, offset: 4 }}>
                 <Form.Control
                   type="password"
                   placeholder="Password"
                   name="password"
+                  className="password"
                   onChange={(e) => this.handleChange(e)}
                 />
               </Col>
             </Form.Group>
 
             <Form.Group as={Row} controlId="formHorizontalCheck">
-              <Col sm={{ span: 10, offset: 2 }}>
-                <Form.Check label="I am not a robot" />
+              <Col lg={{ span: 4, offset: 4 }}>
+                <Form.Check
+                  type="checkbox"
+                  label="Please confim you are not a robot"
+                  required
+                />
               </Col>
             </Form.Group>
 
             <Form.Group as={Row}>
-              <Col sm={{ span: 10, offset: 2 }}>
-                <Button type="submit">Sign in</Button>
+              <Col xs={{ span: 4, offset: 5 }}>
+                <Button type="submit" className="loginBtn">
+                  Sign in
+                </Button>
               </Col>
             </Form.Group>
           </Form>

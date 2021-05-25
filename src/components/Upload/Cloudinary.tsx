@@ -26,13 +26,6 @@ class CloudUpload extends React.Component<CloudProps, CloudState> {
   static contextType = UserContext;
   constructor(props: CloudProps) {
     super(props);
-    var today = new Date(),
-      dateCurrent =
-        today.getFullYear() +
-        "-" +
-        (today.getMonth() + 1) +
-        "-" +
-        today.getDate();
     this.state = {
       userId: "",
       comment: "",

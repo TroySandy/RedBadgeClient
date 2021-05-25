@@ -1,12 +1,11 @@
 import React from "react";
-import Card from "@material-ui/core/Card";
-import CardActionArea from "@material-ui/core/CardActionArea";
-import CardActions from "@material-ui/core/CardActions";
-import CardContent from "@material-ui/core/CardContent";
-import CardMedia from "@material-ui/core/CardMedia";
-import Button from "@material-ui/core/Button";
-import Typography from "@material-ui/core/Typography";
-import { Grid, Paper } from "@material-ui/core";
+import Card from "react-bootstrap/Card";
+import Modal from "react-bootstrap/Modal";
+import Container from "react-bootstrap/Container";
+import Col from "react-bootstrap/Col";
+import Row from "react-bootstrap/Row";
+import Button from "react-bootstrap/Button";
+import Form from "react-bootstrap/Form";
 import { Link } from "react-router-dom";
 
 interface pPhotos {
@@ -54,13 +53,13 @@ class Photos extends React.Component<pPhotos, sPhotos> {
       thumbnail: this.props.Media.image,
       artist_name: this.props.Media.artist_name,
     });
-    setTimeout(() => {
-      console.log(
-        this.state.userMedia,
-        this.state.thumbnail,
-        this.state.mediumId
-      );
-    }, 500);
+    // setTimeout(() => {
+    //   // console.log(
+    //   //   this.state.userMedia,
+    //   //   this.state.thumbnail,
+    //   //   this.state.mediumId
+    //   // );
+    // }, 500);
   }
 
   render() {
@@ -69,47 +68,23 @@ class Photos extends React.Component<pPhotos, sPhotos> {
         to={{
           pathname: "/photo",
           state: {
-            userMedia: this.state.userMedia,
+            id: this.state.mediumId,
           },
         }}
       >
         {this.state.thumbnail ? (
-          <Grid item>
+          <Col>
             <Card
-              raised
-              //   onClick={
-              //     !this.context.isAuth
-              //       ? (e) => this.handleOpenModal()
-              //       : (e) => this.handleOpenComment()
-              //   }
-              //   className={classes.card}
+              className="bg-dark text-white"
+              // onClick={(e: any) => this.postPhoto(e)}
             >
-              <CardActionArea>
-                <CardMedia>
-                  <Paper elevation={10}>
-                    <img
-                      src={this.state.thumbnail}
-                      height="200px"
-                      width="200px"
-                    />
-                  </Paper>
-                </CardMedia>
-                <CardContent>
-                  <Typography
-                    gutterBottom
-                    variant="button"
-                    component="h4"
-                    // className={classes.text}
-                  >
-                    {this.state.artist_name}
-                  </Typography>
-                </CardContent>
-              </CardActionArea>
+              <Card.Img src={this.state.thumbnail} alt="Card image" />
+              <Card.ImgOverlay>
+                <Card.Title>{this.state.artist_name}</Card.Title>
+              </Card.ImgOverlay>
             </Card>
-          </Grid>
-        ) : (
-          <></>
-        )}
+          </Col>
+        ) : null}
       </Link>
     );
   }

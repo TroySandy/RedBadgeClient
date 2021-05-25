@@ -1,18 +1,11 @@
-import {
-  Button,
-  Container,
-  FormControlLabel,
-  Modal,
-  Paper,
-  Slider,
-  TextareaAutosize,
-  Typography,
-} from "@material-ui/core";
-import UserContext from "../../UserContext/UserContext";
 import React from "react";
-import Switch from "@material-ui/core/Switch";
-// import UDComments from "./Comments";
-
+import UserContext from "../../UserContext/UserContext";
+import Modal from "react-bootstrap/Modal";
+import Container from "react-bootstrap/Container";
+import Col from "react-bootstrap/Col";
+import Row from "react-bootstrap/Row";
+import Button from "react-bootstrap/Button";
+import Form from "react-bootstrap/Form";
 interface ISDisplay {
   review: string;
   favorite: boolean;
@@ -20,8 +13,8 @@ interface ISDisplay {
   editing: boolean;
   id: string;
   private: boolean;
+  openModal: boolean;
 }
-
 interface IComment {
   comment: {
     comment: string;
@@ -32,30 +25,6 @@ interface IComment {
     userId: string;
   };
 }
-
-const marks = [
-  {
-    value: 1,
-    label: "1",
-  },
-  {
-    value: 2,
-    label: "2",
-  },
-  {
-    value: 3,
-    label: "3",
-  },
-  {
-    value: 4,
-    label: "4",
-  },
-  {
-    value: 5,
-    label: "5",
-  },
-];
-
 class Comments extends React.Component<IComment, ISDisplay> {
   static contextType = UserContext;
   constructor(props: IComment) {
@@ -67,15 +36,15 @@ class Comments extends React.Component<IComment, ISDisplay> {
       editing: false,
       id: "",
       private: false,
+      openModal: false,
     };
   }
 
-  handleEdit(e: React.BaseSyntheticEvent) {
+  handleOpenModal = () => {
     this.setState({
-      editing: !this.state.editing,
+      openModal: true,
     });
-    console.log(this.state.editing);
-  }
+  };
 
   handleChange(e: React.BaseSyntheticEvent) {
     this.setState((prevstate) => ({
@@ -84,16 +53,8 @@ class Comments extends React.Component<IComment, ISDisplay> {
     }));
   }
 
-  handleSwitch(e: React.BaseSyntheticEvent) {
-    this.setState((prevstate) => ({
-      ...prevstate,
-      [e.target.name]: e.target.checked as Pick<ISDisplay, keyof ISDisplay>,
-    }));
-  }
-
   deleteComment(e: React.BaseSyntheticEvent) {
     console.log("fired");
-
     fetch("http://localhost:4000/comments/", {
       method: "DELETE",
       body: JSON.stringify({ id: this.state.id }),
@@ -139,7 +100,7 @@ class Comments extends React.Component<IComment, ISDisplay> {
       .then((data) => {
         console.log(data);
         this.setState({
-          editing: false,
+          openModal: false,
         });
       });
   }
@@ -149,105 +110,94 @@ class Comments extends React.Component<IComment, ISDisplay> {
       review: this.props.comment.comment,
       favorite: this.props.comment.favorite,
       rating: this.props.comment.rating,
-      editing: false,
+      openModal: false,
       id: this.props.comment.id,
     });
-    console.log(this.state.editing);
+    console.log(this.state.openModal);
   }
   render() {
     return (
-      <Container>
-        <Button
-          variant="outlined"
-          color="primary"
-          type="submit"
-          onClick={(e) => {
-            this.handleEdit(e);
-          }}
-        >
-          Edit Review
-        </Button>
-
-        <h3>{this.state.review}</h3>
-        <h3>{this.state.rating}</h3>
-
+      <>
+        <Container fluid>
+          <p>{this.state.review}</p>
+          <Col xs={12} md={8}>
+            Rating
+            <Form.Control
+              type="range"
+              min="0"
+              max="5"
+              name="rating"
+              id="rating"
+              value={this.state.rating}
+            />
+          </Col>
+        </Container>
         <Modal
-          open={this.state.editing}
-          aria-labelledby="simple-modal-title"
-          aria-describedby="simple-modal-description"
+          aria-labelledby="contained-modal-title-vcenter"
+          id="commentModal"
+          centered
+          show={this.state.openModal}
         >
-          <Container maxWidth="md">
-            <Paper>
-              <Paper>
-                <TextareaAutosize
-                  value={this.state.review}
-                  placeholder="Leave a comment"
-                  name="review"
-                  onChange={(e) => this.handleChange(e)}
-                />
-              </Paper>
-              <Paper>
-                <Slider
-                  aria-labelledby="Rate this image!"
-                  valueLabelDisplay="on"
-                  defaultValue={3}
-                  step={0.25}
-                  onChange={(e) => this.handleChange(e)}
-                  onChangeCommitted={(e) => this.handleChange(e)}
-                  marks={marks}
-                  name="rating"
-                  max={5}
-                />
-              </Paper>
-              <Paper>
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={this.state.favorite}
-                      onChange={(e) => this.handleSwitch(e)}
-                      name="favorite"
-                      title="Favorite"
-                      inputProps={{
-                        "aria-label": "favorite checkbox",
-                      }}
-                    />
-                  }
-                  label="Favorite"
-                />
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={this.state.private}
-                      onChange={(e) => this.handleSwitch(e)}
-                      color="primary"
-                      name="private"
-                      title="Private"
-                      inputProps={{
-                        "aria-label": "private checkbox",
-                      }}
-                    />
-                  }
-                  label="Make Private"
-                />
-                <Button
-                  onClick={(e) => {
-                    this.updateComment(e);
-                  }}
-                >
-                  Update Your Comment
-                </Button>
-                <Button
-                  onClick={(e) => {
-                    this.deleteComment(e);
-                  }}
-                >
-                  Delete Your Comment
-                </Button>
-              </Paper>
-            </Paper>
-          </Container>
+          <Modal.Title id="commentTitle">Leave a Comment</Modal.Title>
+
+          <Modal.Body className="show-grid" id="commentBody">
+            <Container>
+              <Row>
+                <Col xs={12} md={8}>
+                  Rating
+                  <Form.Control
+                    type="range"
+                    custom
+                    min="0"
+                    max="5"
+                    name="rating"
+                    id="rating"
+                    value={this.state.rating}
+                    onChange={(e) => this.handleChange(e)}
+                  />
+                </Col>
+                <Col xs={3} md={2}>
+                  <Form.Check
+                    type="switch"
+                    name="favorite"
+                    id="favorite"
+                    onClick={(e) => this.handleChange(e)}
+                    label="Favorite"
+                  />
+                </Col>
+                <Col xs={3} md={2}>
+                  <Form.Check
+                    type="switch"
+                    name="private"
+                    id="private"
+                    onClick={(e) => this.handleChange(e)}
+                    label="Private"
+                  />
+                </Col>
+              </Row>
+
+              <Row>
+                <Col xs={6} md={4}>
+                  <Form.Control
+                    type="textarea"
+                    custom
+                    size="lg"
+                    name="comment"
+                    id="comment"
+                    onChange={(e) => this.handleChange(e)}
+                  />
+                </Col>
+                <Col xs={6} md={4}></Col>
+                <Col xs={3} md={2}>
+                  <Button onClick={(e) => this.updateComment(e)}>
+                    Post A Comment
+                  </Button>
+                </Col>
+              </Row>
+            </Container>
+          </Modal.Body>
         </Modal>
-      </Container>
+      </>
     );
   }
 }

@@ -1,15 +1,14 @@
 import React from "react";
-import { Button, Container, Paper } from "@material-ui/core";
-import TreeView from "@material-ui/lab/TreeView";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import ChevronRightIcon from "@material-ui/icons/ChevronRight";
-import TreeItem from "@material-ui/lab/TreeItem";
+import Container from "react-bootstrap/Container";
+import Button from "react-bootstrap/Button";
 import { Redirect } from "react-router-dom";
+import UserContext from "../../UserContext/UserContext";
 interface IAdminState {
   userInfo: any;
 }
 
 class AdminTable extends React.Component<{}, IAdminState> {
+  static contextType = UserContext;
   constructor(props: {}) {
     super(props);
     this.state = {
@@ -46,11 +45,8 @@ class AdminTable extends React.Component<{}, IAdminState> {
   render() {
     return (
       <Container>
-        <TreeView
-          defaultCollapseIcon={<ExpandMoreIcon />}
-          defaultExpandIcon={<ChevronRightIcon />}
-        >
-          <TreeItem nodeId="1" label="Users">
+        <div>
+          <div>
             {this.state.userInfo.map((user: any) => {
               return (
                 <>
@@ -59,8 +55,8 @@ class AdminTable extends React.Component<{}, IAdminState> {
                 </>
               );
             })}
-          </TreeItem>
-        </TreeView>
+          </div>
+        </div>
         {/* {!this.context.user.isAdmin ? <Redirect to="/" /> : null} */}
       </Container>
     );
@@ -103,7 +99,7 @@ class UserDelete extends React.Component<userprop, userstate> {
       .then((res) => {
         console.log(res);
 
-        if (res.status !== 201) {
+        if (res.status !== 200) {
           console.log("Record not Deleted", res.status);
         } else {
           this.props.update();
@@ -123,14 +119,10 @@ class UserDelete extends React.Component<userprop, userstate> {
   render() {
     return (
       <>
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={(e) => this.deleteUser(e)}
-        >
+        <Button variant="outline-secondary" onClick={(e) => this.deleteUser(e)}>
           Delete User
         </Button>
-        <TreeItem nodeId="2" label="Media">
+        <div>
           {this.state.media.map((image: any) => {
             return (
               <>
@@ -138,7 +130,7 @@ class UserDelete extends React.Component<userprop, userstate> {
               </>
             );
           })}
-        </TreeItem>
+        </div>
       </>
     );
   }
@@ -200,17 +192,16 @@ class MediaDelete extends React.Component<mediaprop, mediastate> {
       <>
         <img src={this.state.image} />
         <Button
-          variant="contained"
-          color="secondary"
+          variant="outline-secondary"
           onClick={(e) => this.deleteMedia(e)}
         >
           Delete Media
         </Button>
-        <TreeItem nodeId="3" label="Comment">
+        <div>
           {this.state.comments.map((comment: any) => {
             return <CommentDelete comment={comment} />;
           })}
-        </TreeItem>
+        </div>
       </>
     );
   }
@@ -267,8 +258,7 @@ class CommentDelete extends React.Component<commentprop, commentstate> {
       <>
         <p>{this.state.comment}</p>
         <Button
-          variant="contained"
-          color="secondary"
+          variant="outline-secondary"
           onClick={(e) => this.deleteComment(e)}
         >
           Delete Comment

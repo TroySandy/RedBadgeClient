@@ -6,6 +6,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
+import Container from "react-bootstrap/Container";
 export interface RegisterState {
   firstName: string;
   lastName: string;
@@ -13,6 +14,8 @@ export interface RegisterState {
   email: string;
   password: string;
   isAdmin: boolean;
+  // verifyEmail: boolean;
+  // verifyPassword: boolean;
 }
 
 export interface RegisterProps {}
@@ -88,74 +91,101 @@ class Register extends React.Component<{}, RegisterState> {
 
   render() {
     return (
-      <div>
-        <>
-          <Form onSubmit={(e) => this.registerFetch(e)}>
+      <Container className="registerBG">
+        <div className="registerForm">
+          <Form
+            onSubmit={(e) => this.registerFetch(e)}
+            className="registerForm"
+          >
             <Form.Row>
-              <Form.Group as={Col} controlId="formGridfirstName">
-                <Form.Label>First Name</Form.Label>
+              <Form.Group
+                as={Col}
+                lg={{ span: 4, offset: 4 }}
+                controlId="formGridfirstName"
+              >
                 <Form.Control
                   type="text"
                   placeholder="First Name"
                   name="firstName"
-                  onChange={(e) => this.handleChange(e)}
-                />
-              </Form.Group>
-
-              <Form.Group as={Col} controlId="formGridLastname">
-                <Form.Label>Last Name</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Last name"
-                  name="lastName"
-                  onChange={(e) => this.handleChange(e)}
-                />
-              </Form.Group>
-            </Form.Row>
-            <Form.Row>
-              <Form.Group as={Col} controlId="formGridEmail">
-                <Form.Label>Email</Form.Label>
-                <Form.Control
-                  type="email"
-                  placeholder="Enter email"
-                  name="email"
-                  onChange={(e) => this.handleChange(e)}
-                />
-              </Form.Group>
-            </Form.Row>
-            <Form.Row>
-              <Form.Group as={Col} controlId="formGridUsername">
-                <Form.Label>Username</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Enter Username"
-                  name="username"
+                  className="firstName"
                   onChange={(e) => this.handleChange(e)}
                 />
               </Form.Group>
 
               <Form.Group
                 as={Col}
+                lg={{ span: 4, offset: 4 }}
+                controlId="formGridLastname"
+              >
+                <Form.Control
+                  type="text"
+                  placeholder="Last name"
+                  name="lastName"
+                  className="lastName"
+                  onChange={(e) => this.handleChange(e)}
+                />
+              </Form.Group>
+            </Form.Row>
+            <Form.Row>
+              <Form.Group
+                as={Col}
+                lg={{ span: 4, offset: 4 }}
+                controlId="formGridEmail"
+              >
+                <Form.Control
+                  type="email"
+                  placeholder="Enter email"
+                  name="email"
+                  className="email"
+                  onChange={(e) => this.handleChange(e)}
+                />
+              </Form.Group>
+            </Form.Row>
+            <Form.Row>
+              <Form.Group
+                as={Col}
+                lg={{ span: 4, offset: 4 }}
+                controlId="formGridUsername"
+              >
+                <Form.Control
+                  type="text"
+                  placeholder="Enter Username"
+                  name="username"
+                  className="username"
+                  onChange={(e) => this.handleChange(e)}
+                />
+              </Form.Group>
+
+              <Form.Group
+                as={Col}
+                lg={{ span: 4, offset: 4 }}
                 controlId="formGridPassword"
                 name="password"
+                className="password"
                 onChange={(e: React.BaseSyntheticEvent) => this.handleChange(e)}
               >
-                <Form.Label>Password</Form.Label>
                 <Form.Control type="password" placeholder="Password" />
               </Form.Group>
             </Form.Row>
 
             <Form.Group id="formGridCheckbox">
-              <Form.Check type="checkbox" label="Check me out" />
+              <Col xs={{ span: 4, offset: 4 }}>
+                <Form.Check
+                  type="checkbox"
+                  label="Please confim you are not a robot"
+                  required
+                />
+              </Col>
             </Form.Group>
-
-            <Button variant="primary" type="submit">
-              Submit
-            </Button>
+            <Col xs={{ span: 4, offset: 5 }}>
+              <Button variant="primary" type="submit" className="registerBtn">
+                Submit
+              </Button>
+            </Col>
           </Form>
-        </>
+        </div>
         {this.context.isAuth ? <Redirect to="/" /> : null}
-      </div>
+      </Container>
     );
   }
 }

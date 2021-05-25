@@ -8,41 +8,25 @@ import Home from "./components/site/Home";
 import AdminTable from "./components/Auth/Admin";
 import CloudUpload from "./components/Upload/Cloudinary";
 import NavBar from "../src/components/site/Nav";
+import Collage from "../src/components/Unsplash/Collage";
 import DisplayComments from "./components/CommentDisplay/DisplayComments";
 import UserContext from "./UserContext/UserContext";
 import PhotoDisplay from "./components/UserPhotos/PhotoDisplay";
-import { GuardProvider, GuardedRoute } from "react-router-guards";
+import CollageDisplay from "./components/Unsplash/CollageDisplay";
 
-// const requireLogin = (to, from, next) => {
-//   if (to.meta.auth) {
-//     if () {
-//       next();
-//     }
-//     next.redirect('/login');
-//   } else {
-//     next();
-//   }
-// };
-
-class App extends React.Component<{}, {}> {
-  static contextType = UserContext;
-  constructor(props: {}) {
-    super(props);
-    this.state = {
-      isAuth: "",
-    };
-  }
-
+class App extends React.Component {
   render() {
     return (
       <Router>
-        <div>
+        <div className="AppBg">
           <NavBar />
 
           <Switch>
             <Route path="/login" component={Login} />
             <Route path="/register" component={Register} />
             <Route path="/upload" component={CloudUpload} />
+            <Route path="/stream" component={Collage} />
+            <Route path="/display" component={CollageDisplay} />
             <Route path="/admin" component={AdminTable} />
             <Route path="/media" component={PhotoDisplay} />
             <Route path="/photo" component={DisplayComments} />

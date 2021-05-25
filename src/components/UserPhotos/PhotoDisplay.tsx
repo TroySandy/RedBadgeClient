@@ -1,12 +1,16 @@
 import React from "react";
 import UserContext from "../../UserContext/UserContext";
-import { Container, Grid, Paper } from "@material-ui/core";
-import { NavLink, Redirect } from "react-router-dom";
-
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
 import Photos from "./Photos";
+import InfiniteScroll from "react-infinite-scroll-component";
+import "../Unsplash/Collage.css";
+import { Link } from "react-router-dom";
 
 interface IPhotoDisp {
   userMedia: UserMedia[];
+  userId: string;
+  loaded: boolean;
 }
 interface UserMedia {
   artist_name: string;
@@ -31,12 +35,15 @@ export default class PhotoDisplay extends React.Component<{}, IPhotoDisp> {
     super(props);
     this.state = {
       userMedia: [],
+      userId: "",
+      loaded: true,
     };
   }
 
-  componentDidMount() {
+  fetchAllPhotos = () => {
+    // console.log(this.state.userId);
+
     fetch("http://localhost:4000/media/media", {
-      method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${this.context.token}`,
@@ -50,26 +57,99 @@ export default class PhotoDisplay extends React.Component<{}, IPhotoDisp> {
         }
       })
       .then((data) => {
+        console.log(data);
         const media = data.Media;
-        console.log(data.Media);
         this.setState({
           userMedia: media,
         });
-        // console.log(this.state.userMedia);
+        console.log(this.state.userMedia);
       });
+  };
+
+  componentDidMount() {
+    console.log(this.context.user.id);
+
+    this.setState({
+      userId: this.context.user.id,
+    });
+
+    setTimeout(() => {
+      this.fetchAllPhotos();
+    }, 250);
   }
 
   render() {
+    // {
+    //   !this.context.isAuth ? <Redirect to="/" /> : null;
+    // }
     return (
       <>
-        <Container>
-          <Grid container spacing={1} item>
-            {this.state.userMedia.map((image: UserMedia) => {
-              return <Photos Media={image} />;
-            })}
-          </Grid>
-          {!this.context.isAuth ? <Redirect to="/" /> : null}
+        <Container className="divContainer">
+          <InfiniteScroll
+            dataLength={this.state.userMedia.length}
+            next={() => this.fetchAllPhotos()}
+            hasMore={true}
+            loader={<></>}
+            refreshFunction={this.fetchAllPhotos}
+          >
+            <div className="ImageDisplay" style={{ marginTop: "30px" }}>
+              {this.state.loaded
+                ? this.state.userMedia.map((image: any, index: number) => (
+                    <UserMedia image={image} key={index} />
+                  ))
+                : null}
+            </div>
+          </InfiniteScroll>
         </Container>
+      </>
+    );
+  }
+}
+
+interface UserMediaState {
+  url: string;
+  image: any;
+}
+interface UserMediaProps {
+  image: any;
+}
+
+class UserMedia extends React.Component<UserMediaProps, UserMediaState> {
+  constructor(props: UserMediaProps) {
+    super(props);
+    this.state = {
+      url: "",
+      image: [],
+    };
+  }
+  componentWillUnmount() {
+    this.setState({
+      url: "",
+      image: "",
+    });
+  }
+  componentDidMount() {
+    this.setState({
+      url: this.props.image,
+      image: this.props.image,
+    });
+    console.log(this.props.image);
+  }
+  render() {
+    return (
+      <>
+        <div className="photos">
+          <Link
+            to={{
+              pathname: "/photo",
+              state: {
+                id: this.state.image.id,
+              },
+            }}
+          >
+            <img src={this.state.image.url_reg} className="imgPhoto" />
+          </Link>
+        </div>
       </>
     );
   }

@@ -4,7 +4,8 @@ import config from "../../config";
 import UserContext from "../../UserContext/UserContext";
 import "./home.css";
 import MediaDisplay from "../Unsplash/MediaDisplay";
-import { Container, Grid } from "@material-ui/core";
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
 
 interface HomeState {
   unsplashResults: any;
@@ -52,7 +53,7 @@ class Home extends React.Component<{}, HomeState> {
           console.log("ERROR!!!!!", result.errors[0]);
         } else {
           const images = result.response;
-          console.log(result);
+          // console.log(result);
 
           this.setState({
             unsplashResults: images,
@@ -64,12 +65,12 @@ class Home extends React.Component<{}, HomeState> {
   render() {
     return (
       <>
-        <Container>
-          <Grid container spacing={1} item>
+        <Container id="homeBG">
+          <Row xl={5} lg={4} md={3} sm={2} xs={1} noGutters>
             {this.state.unsplashResults.map((image: any) => {
               return <MediaDisplay unsplashResults={image} />;
             })}
-          </Grid>
+          </Row>
         </Container>
       </>
     );

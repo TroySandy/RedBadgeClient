@@ -27,7 +27,7 @@ interface IMenuState {
   portfolio_url: string;
 }
 
-class NavBar extends React.Component<{}, IMenuState> {
+class Menu extends React.Component<{}, IMenuState> {
   static contextType = UserContext;
   constructor(props: {}) {
     super(props);
@@ -225,4 +225,4 @@ class NavBar extends React.Component<{}, IMenuState> {
     );
   }
 }
-export default NavBar;
+export default Menu;

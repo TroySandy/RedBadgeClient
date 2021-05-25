@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Login from "./components/Auth/Login";
 import Register from "./components/Auth/Register";
 import AdminTable from "./components/Auth/Admin";
-import NavBar from "../src/components/site/Nav";
+import Menu from "../src/components/site/Nav";
 import Collage from "../src/components/Unsplash/Collage";
 import DisplayComments from "./components/CommentDisplay/DisplayComments";
 import PhotoDisplay from "./components/UserPhotos/PhotoDisplay";
@@ -15,7 +15,7 @@ class App extends React.Component {
     return (
       <div className="AppBg">
         <Router>
-          <NavBar />
+          <Menu />
 
           <Switch>
             <Route path="/login" component={Login} />

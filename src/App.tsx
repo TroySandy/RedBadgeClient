@@ -9,7 +9,7 @@ import Collage from "../src/components/Unsplash/Collage";
 import DisplayComments from "./components/CommentDisplay/DisplayComments";
 import PhotoDisplay from "./components/UserPhotos/PhotoDisplay";
 import CollageDisplay from "./components/Unsplash/CollageDisplay";
-import "bootstrap/dist/css/bootstrap.min.css";
+
 class App extends React.Component {
   render() {
     return (

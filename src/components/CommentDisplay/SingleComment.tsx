@@ -8,6 +8,7 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import config from "../../config";
 import Card from "react-bootstrap/Card";
+import { Redirect } from "react-router-dom";
 
 interface ISDisplay {
   review: string;
@@ -108,41 +109,8 @@ class Comments extends React.Component<IComment, ISDisplay> {
       });
   }
 
-  // fetchComment = () => {
-  //   // console.log(this.state.id);
-
-  //   fetch("http://localhost:4000/comment/comment", {
-  //     method: "POST",
-  //     body: JSON.stringify({
-  //       id: this.state.id,
-  //     }),
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //       Authorization: `Bearer ${this.context.token}`,
-  //     },
-  //   })
-  //     .then((res) => {
-  //       if (res.status !== 201) {
-  //         console.log("Files not found", res.status);
-  //       } else {
-  //         return res.json();
-  //       }
-  //     })
-  //     .then((data) => {
-  //       console.log(data);
-  //       //   this.setState({
-  //       //     review: "",
-  //       // favorite: true,
-  //       // rating: 3,
-  //       // editing: false,
-  //       // id: "",
-  //       // private: false,
-  //       //   });
-  //     });
-  // };
-
   componentDidMount() {
-    console.log(this.props.comment);
+    // console.log(this.props.comment);
 
     this.setState({
       review: this.props.comment.comment,
@@ -151,9 +119,6 @@ class Comments extends React.Component<IComment, ISDisplay> {
       openModal: false,
       id: this.props.comment.id,
     });
-    // setTimeout(() => {
-    //   this.fetchComment();
-    // }, 500);
   }
   render() {
     return (
@@ -173,6 +138,7 @@ class Comments extends React.Component<IComment, ISDisplay> {
               </Button>
             </Card.Body>
           </Card>
+          {!this.context.isAuth ? <Redirect to="/" /> : null}
         </Container>
         <Modal
           aria-labelledby="contained-modal-title-vcenter"

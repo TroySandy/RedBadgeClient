@@ -4,7 +4,7 @@ import Container from "react-bootstrap/Container";
 import InfiniteScroll from "react-infinite-scroll-component";
 import "../Unsplash/Collage.css";
 import config from "../../config";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 
 interface IPhotoDisp {
   userMedia: UserMedia[];
@@ -99,6 +99,7 @@ export default class PhotoDisplay extends React.Component<{}, IPhotoDisp> {
                 : null}
             </div>
           </InfiniteScroll>
+          {!this.context.user.isAdmin ? <Redirect to="/" /> : null}
         </Container>
       </>
     );

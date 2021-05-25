@@ -199,10 +199,10 @@ class CollageDisplay extends React.Component<Iprops, CDState> {
             />
             <Card.ImgOverlay>
               <Card.Title>
-                {this.state.artist_name} |{" "}
+                {this.state.artist_name}
                 {this.context.isAuth ? (
                   <a onClick={(e: React.MouseEvent) => this.postPhoto(e)}>
-                    <FontAwesomeIcon icon={faHeart} />
+                    | <FontAwesomeIcon icon={faHeart} />
                   </a>
                 ) : null}
               </Card.Title>

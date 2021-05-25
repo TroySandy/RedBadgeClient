@@ -4,7 +4,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import "./Collage.css";
 import Container from "react-bootstrap/Container";
 import { Link } from "react-router-dom";
-require("dotenv").config();
+import config from "../../config";
 interface CollageState {
   images: any;
   loaded: boolean;
@@ -13,7 +13,7 @@ interface CollageState {
 const api = createApi({
   // Don't forget to set your access token here!
   // See https://unsplash.com/developers
-  accessKey: `${process.env.REACT_APP_UNSPLASH_APIKEY}`,
+  accessKey: `${config.REACT_APP_UNSPLASH_APIKEY}`,
 });
 
 class Collage extends React.Component<{}, CollageState> {

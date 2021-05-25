@@ -1,8 +1,6 @@
 import React from "react";
 import UserContext from "../../UserContext/UserContext";
-import Button from "react-bootstrap/Button";
-import Nav from "react-bootstrap/Nav";
-import Navbar from "react-bootstrap/NavBar";
+import { Navbar, Nav, Button } from "react-bootstrap";
 import "./Nav.css";
 import config from "../../config";
 

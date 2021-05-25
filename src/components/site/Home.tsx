@@ -4,11 +4,28 @@ import config from "../../config";
 import UserContext from "../../UserContext/UserContext";
 import "./home.css";
 import MediaDisplay from "../Unsplash/MediaDisplay";
-import { Container, Grid } from "@material-ui/core";
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
 
 interface HomeState {
-  imageResult: any;
-  searchInput: string;
+  unsplashResults: any;
+  mediaResults: any;
+}
+
+interface unsplashResults {
+  blur_hash: string;
+  image: string;
+  thumbnailL: string;
+  url_thumb: string;
+  url_small: string;
+  url_reg: string;
+  url_raw: string;
+  artist: string;
+  artist_imag: string;
+  portfolio_url: string;
+  private: boolean;
+  favorite: boolean;
+  userId: string;
 }
 
 const api = createApi({
@@ -23,35 +40,37 @@ class Home extends React.Component<{}, HomeState> {
   constructor(props: {}) {
     super(props);
     this.state = {
-      imageResult: [],
-      searchInput: "",
+      unsplashResults: [],
+      mediaResults: [],
     };
   }
 
   componentDidMount() {
-    api.photos.getRandom({ featured: true, count: 50 }).then((result) => {
-      if (result.errors) {
-        console.log("ERROR!!!!!", result.errors[0]);
-      } else {
-        const images = result.response;
-        console.log(result);
+    api.photos
+      .getRandom({ featured: true, orientation: "squarish", count: 50 })
+      .then((result) => {
+        if (result.errors) {
+          console.log("ERROR!!!!!", result.errors[0]);
+        } else {
+          const images = result.response;
+          // console.log(result);
 
-        this.setState({
-          imageResult: images,
-        });
-      }
-    });
+          this.setState({
+            unsplashResults: images,
+          });
+        }
+      });
   }
 
   render() {
     return (
       <>
-        <Container>
-          <Grid container spacing={1}>
-            {this.state.imageResult.map((image: any) => {
-              return <MediaDisplay imageResult={image} />;
+        <Container id="homeBG">
+          <Row xl={5} lg={4} md={3} sm={2} xs={1} noGutters>
+            {this.state.unsplashResults.map((image: any) => {
+              return <MediaDisplay unsplashResults={image} />;
             })}
-          </Grid>
+          </Row>
         </Container>
       </>
     );

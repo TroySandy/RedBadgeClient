@@ -1,20 +1,23 @@
 import React from "react";
-import { withRouter } from "react-router";
+import { Redirect, withRouter } from "react-router";
 import UserContext from "../../UserContext/UserContext";
 
 export interface CloudState {
-  imageSecure: string;
-  image: string;
-  thumbnail: string;
-  fileTag: string[];
   private: boolean;
   userId: string;
-  date: string;
-  blurhash: string;
-  url_regular: string;
+  comment: string;
+  rating: number;
+  favorite: true;
+  mediumId: string;
+  blur_hash: string;
   url_thumb: string;
-  artist: string;
-  artist_image: string;
+  url_small: string;
+  url_reg: string;
+  url_raw: string;
+  image: string;
+  thumbnail: string;
+  artist_name: string;
+  artist_img: string;
   portfolio_url: string;
 }
 
@@ -23,26 +26,22 @@ class CloudUpload extends React.Component<CloudProps, CloudState> {
   static contextType = UserContext;
   constructor(props: CloudProps) {
     super(props);
-    var today = new Date(),
-      dateCurrent =
-        today.getFullYear() +
-        "-" +
-        (today.getMonth() + 1) +
-        "-" +
-        today.getDate();
     this.state = {
-      imageSecure: "",
+      userId: "",
+      comment: "",
+      rating: 3,
+      mediumId: "",
+      private: false,
+      favorite: true,
+      blur_hash: "",
+      url_thumb: "",
+      url_small: "",
+      url_reg: "",
+      url_raw: "",
       image: "",
       thumbnail: "",
-      fileTag: [],
-      private: false,
-      userId: "",
-      date: dateCurrent,
-      blurhash: "",
-      url_regular: "",
-      url_thumb: "",
-      artist: "",
-      artist_image: "",
+      artist_name: "",
+      artist_img: "",
       portfolio_url: "",
     };
   }
@@ -53,12 +52,18 @@ class CloudUpload extends React.Component<CloudProps, CloudState> {
     fetch("http://localhost:4000/media/upload", {
       method: "POST",
       body: JSON.stringify({
-        image: this.state.image,
-        imageSecure: this.state.imageSecure,
-        thumbnail: this.state.thumbnail,
-        tags: this.state.fileTag,
         private: this.state.private,
-        userId: this.state.userId,
+        favorite: this.state.favorite,
+        blur_hash: this.state.blur_hash,
+        url_thumb: this.state.url_thumb,
+        url_small: this.state.url_small,
+        url_reg: this.state.url_reg,
+        url_raw: this.state.url_raw,
+        image: this.state.image,
+        thumbnail: this.state.thumbnail,
+        artist_name: this.state.artist_name,
+        artist_img: this.state.artist_img,
+        portfolio_url: this.state.portfolio_url,
       }),
       headers: {
         "Content-Type": "application/json",
@@ -77,11 +82,18 @@ class CloudUpload extends React.Component<CloudProps, CloudState> {
       .then((data) => {
         console.log("Media", data);
         this.setState({
-          imageSecure: "",
+          private: false,
+          favorite: true,
+          blur_hash: "",
+          url_thumb: "",
+          url_small: "",
+          url_reg: "",
+          url_raw: "",
           image: "",
           thumbnail: "",
-          fileTag: [],
-          private: false,
+          artist_name: "",
+          artist_img: "",
+          portfolio_url: "",
           userId: this.context.user.id,
         });
       });
@@ -96,18 +108,19 @@ class CloudUpload extends React.Component<CloudProps, CloudState> {
 
   componentDidMount() {
     this.setState({
-      imageSecure: "",
+      private: false,
+      favorite: true,
+      blur_hash: "",
+      url_thumb: "",
+      url_small: "",
+      url_reg: "",
+      url_raw: "",
       image: "",
       thumbnail: "",
-      fileTag: [],
-      private: false,
-      userId: this.context.user.id,
-      blurhash: "",
-      url_regular: "",
-      url_thumb: "",
-      artist: "",
-      artist_image: "",
+      artist_name: "",
+      artist_img: "",
       portfolio_url: "",
+      userId: this.context.user.id,
     });
 
     // setTimeout(() => {
@@ -118,7 +131,7 @@ class CloudUpload extends React.Component<CloudProps, CloudState> {
         cloud_name: "wd1150photohost",
         upload_preset: "upload1",
         sources: ["local", "url", "camera", "image_search"],
-        tags: [this.state.userId, this.state.date],
+        tags: [this.state.userId],
         multiple: true,
         cropping: true,
         croppingShowDimensions: true,
@@ -130,11 +143,10 @@ class CloudUpload extends React.Component<CloudProps, CloudState> {
           console.log(this.state.userId, "no file");
         } else {
           this.setState({
-            imageSecure: res.info.secure_url,
+            url_thumb: res.info.thumbnail_url,
             image: res.info.url,
+            artist_name: this.context.user.username,
             userId: this.context.user.id,
-            thumbnail: res.info.thumbnail_url,
-            fileTag: res.info.tags,
           });
           setTimeout(() => {
             this.postMedia();

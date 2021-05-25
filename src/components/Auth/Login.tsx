@@ -3,11 +3,11 @@ import UserContext from "../../UserContext/UserContext";
 import { Redirect } from "react-router-dom";
 import "./Login.css";
 import Container from "react-bootstrap/Container";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
+import config from "../../config";
 
 interface ILoginState {
   username: string;
@@ -15,12 +15,9 @@ interface ILoginState {
   showPassword: boolean;
   validated: boolean;
 }
-interface ILoginProps {
-  classes: any;
-}
-class Login extends React.Component<ILoginProps, ILoginState> {
+class Login extends React.Component<{}, ILoginState> {
   static contextType = UserContext;
-  constructor(props: ILoginProps) {
+  constructor(props: {}) {
     super(props);
     this.state = {
       username: "",
@@ -32,7 +29,7 @@ class Login extends React.Component<ILoginProps, ILoginState> {
 
   logIn(e: React.BaseSyntheticEvent) {
     e.preventDefault();
-    fetch(`http://localhost:4000/user/login`, {
+    fetch(`${config.REACT_APP_SERVER_API_URL}/user/login`, {
       method: "POST",
       body: JSON.stringify({
         username: this.state.username,

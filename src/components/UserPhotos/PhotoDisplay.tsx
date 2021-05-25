@@ -1,10 +1,9 @@
 import React from "react";
 import UserContext from "../../UserContext/UserContext";
 import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
-import Photos from "./Photos";
 import InfiniteScroll from "react-infinite-scroll-component";
 import "../Unsplash/Collage.css";
+import config from "../../config";
 import { Link } from "react-router-dom";
 
 interface IPhotoDisp {
@@ -43,7 +42,7 @@ export default class PhotoDisplay extends React.Component<{}, IPhotoDisp> {
   fetchAllPhotos = () => {
     // console.log(this.state.userId);
 
-    fetch("http://localhost:4000/media/media", {
+    fetch(`${config.REACT_APP_SERVER_API_URL}/media/media`, {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${this.context.token}`,

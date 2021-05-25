@@ -4,6 +4,7 @@ import Card from "react-bootstrap/Card";
 import UserContext from "../../UserContext/UserContext";
 import Container from "react-bootstrap/Container";
 import { Redirect } from "react-router-dom";
+import config from "../../config";
 
 interface Iprops {
   location: {
@@ -73,7 +74,7 @@ class DisplayComments extends React.Component<Iprops, IState> {
   fetchPhoto = () => {
     // console.log(this.state.id);
 
-    fetch("http://localhost:4000/media/photo", {
+    fetch(`${config.REACT_APP_SERVER_API_URL}/media/photo`, {
       method: "POST",
       body: JSON.stringify({
         id: this.state.id,
@@ -135,12 +136,14 @@ class DisplayComments extends React.Component<Iprops, IState> {
               <Card.Img src={this.state.image} alt="Card image" />
               <Card.ImgOverlay>
                 <Card.Title>{this.state.artist_name}</Card.Title>
+                <Card.Text>
+                  {this.state.comments.map((comment: any) => {
+                    return <Comments comment={comment} />;
+                  })}
+                </Card.Text>
               </Card.ImgOverlay>
             </Card>
           </Card>
-          {this.state.comments.map((comment: any) => {
-            return <Comments comment={comment} />;
-          })}
         </Container>
         {!this.context.isAuth ? <Redirect to="/" /> : null}
       </Container>

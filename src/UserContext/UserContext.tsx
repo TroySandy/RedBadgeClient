@@ -1,5 +1,5 @@
-import React from "react";
-import { Component } from "react";
+import React, { Component } from "react";
+import config from "../config";
 
 type ContextProps = {};
 const UserContext = React.createContext<Partial<ContextProps>>({});
@@ -42,7 +42,7 @@ export class UserContextProvider extends Component<
       if (this.state.token) {
         localStorage.setItem("token", this.state.token);
         // console.log(this.state.token);
-        fetch(`http://localhost:4000/user/`, {
+        fetch(`${config.REACT_APP_SERVER_API_URL}/user/`, {
           headers: new Headers({
             Authorization: `Bearer ${this.state.token}`,
           }),

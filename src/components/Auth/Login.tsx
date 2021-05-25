@@ -1,36 +1,35 @@
-import React, { Component, BaseSyntheticEvent } from "react";
+import React from "react";
 import UserContext from "../../UserContext/UserContext";
-import { Container, Button, TextField, PropTypes } from "@material-ui/core";
-import OutlinedInput from "@material-ui/core/OutlinedInput";
-import InputLabel from "@material-ui/core/InputLabel";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import FormControl from "@material-ui/core/FormControl";
-import AccountCircleIcon from "@material-ui/icons/AccountCircle";
-import Visibility from "@material-ui/icons/Visibility";
-import VisibilityOff from "@material-ui/icons/VisibilityOff";
-import IconButton from "@material-ui/core/IconButton";
+import { Redirect } from "react-router-dom";
+import "./Login.css";
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import Form from "react-bootstrap/Form";
+import Button from "react-bootstrap/Button";
+import config from "../../config";
 
 interface ILoginState {
   username: string;
   password: string;
   showPassword: boolean;
+  validated: boolean;
 }
-interface ILoginProps {}
-
-class Login extends Component<ILoginProps, ILoginState> {
+class Login extends React.Component<{}, ILoginState> {
   static contextType = UserContext;
-  constructor(props: ILoginProps) {
+  constructor(props: {}) {
     super(props);
     this.state = {
       username: "",
       password: "",
       showPassword: false,
+      validated: false,
     };
   }
 
-  logIn = (e: React.BaseSyntheticEvent) => {
+  logIn(e: React.BaseSyntheticEvent) {
     e.preventDefault();
-    fetch(`http://localhost:4000/user/login`, {
+    fetch(`${config.REACT_APP_SERVER_API_URL}/user/login`, {
       method: "POST",
       body: JSON.stringify({
         username: this.state.username,
@@ -43,84 +42,72 @@ class Login extends Component<ILoginProps, ILoginState> {
       .then((res) => {
         if (res.status != 200) {
           console.log("Invalid username or password.");
-        } else {
-          //redirect to home
-          // this.props.history.push("/");
         }
         return res.json();
       })
       .then((data) => {
-        console.log(data);
+        console.log(data.token);
         this.context.setToken(data.token);
       });
-  };
+  }
+
   handleChange(e: React.BaseSyntheticEvent) {
+    console.log(this.state.username);
     this.setState((prevstate) => ({
       ...prevstate,
       [e.target.name]: e.target.value as Pick<ILoginState, keyof ILoginState>,
     }));
   }
 
-  handleClickShowPassword = (e: React.BaseSyntheticEvent) => {
-    this.setState({
-      showPassword: !this.state.showPassword,
-    });
-  };
-  handleMouseDownPassword = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-  };
-
   render() {
     return (
-      <Container>
-        <form>
-          <FormControl>
-            <TextField
-              name="username"
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <AccountCircleIcon />
-                  </InputAdornment>
-                ),
-              }}
-              variant="outlined"
-              onChange={(e) => this.handleChange(e)}
-            />
-          </FormControl>
-          <FormControl>
-            <OutlinedInput
-              name="password"
-              type={this.state.showPassword ? "text" : "password"}
-              value={this.state.password}
-              onChange={(e) => this.handleChange(e)}
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={(e) => this.handleClickShowPassword(e)}
-                    onMouseDown={(e) => this.handleMouseDownPassword(e)}
-                  >
-                    {this.state.showPassword ? (
-                      <Visibility />
-                    ) : (
-                      <VisibilityOff />
-                    )}
-                  </IconButton>
-                </InputAdornment>
-              }
-            />
-          </FormControl>
-        </form>
+      <Container fluid className="loginBG">
+        <Container className="loginContainer">
+          <Form onSubmit={(e) => this.logIn(e)} className="loginForm">
+            <Form.Group as={Row} controlId="formHorizontalUserName">
+              <Col lg={{ span: 4, offset: 4 }}>
+                <Form.Control
+                  type="text"
+                  placeholder="Username"
+                  name="username"
+                  className="username"
+                  onChange={(e) => this.handleChange(e)}
+                />
+              </Col>
+            </Form.Group>
 
-        <Button
-          type="button"
-          variant="contained"
-          color="primary"
-          onClick={(e) => this.logIn(e)}
-        >
-          Login
-        </Button>
+            <Form.Group as={Row} controlId="formHorizontalPassword">
+              <Col lg={{ span: 4, offset: 4 }}>
+                <Form.Control
+                  type="password"
+                  placeholder="Password"
+                  name="password"
+                  className="password"
+                  onChange={(e) => this.handleChange(e)}
+                />
+              </Col>
+            </Form.Group>
+
+            <Form.Group as={Row} controlId="formHorizontalCheck">
+              <Col lg={{ span: 4, offset: 4 }}>
+                <Form.Check
+                  type="checkbox"
+                  label="Please confim you are not a robot"
+                  required
+                />
+              </Col>
+            </Form.Group>
+
+            <Form.Group as={Row}>
+              <Col xs={{ span: 4, offset: 5 }}>
+                <Button type="submit" className="loginBtn">
+                  Sign in
+                </Button>
+              </Col>
+            </Form.Group>
+          </Form>
+        </Container>
+        {this.context.isAuth ? <Redirect to="/" /> : null}
       </Container>
     );
   }

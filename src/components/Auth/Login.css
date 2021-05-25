@@ -1,0 +1,14 @@
+.loginBG {
+  background-image: url("../../assets/TreesBG.jpg") !important;
+  background-position-y: 40%;
+  background-position-x: 30%;
+  width: 100vw;
+  height: 100vh;
+}
+
+.loginForm {
+  display: inline;
+  position: relative;
+  justify-content: center !important;
+  align-items: center;
+}

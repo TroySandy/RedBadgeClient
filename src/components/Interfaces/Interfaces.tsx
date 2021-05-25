@@ -2,7 +2,7 @@ export interface IResponse {
   docs: [];
 }
 
-interface IHeadline {
+export interface IHeadline {
   main: string;
 }
 

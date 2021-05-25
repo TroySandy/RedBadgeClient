@@ -1,14 +1,12 @@
 import React from "react";
 import "./App.css";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import { UserContextProvider } from "./UserContext/UserContext";
 import Login from "./components/Auth/Login";
 import Register from "./components/Auth/Register";
 import AdminTable from "./components/Auth/Admin";
 import NavBar from "../src/components/site/Nav";
 import Collage from "../src/components/Unsplash/Collage";
 import DisplayComments from "./components/CommentDisplay/DisplayComments";
-import UserContext from "./UserContext/UserContext";
 import PhotoDisplay from "./components/UserPhotos/PhotoDisplay";
 import CollageDisplay from "./components/Unsplash/CollageDisplay";
 import "bootstrap/dist/css/bootstrap.min.css";

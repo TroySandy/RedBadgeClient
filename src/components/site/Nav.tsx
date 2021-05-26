@@ -143,7 +143,6 @@ class Menu extends React.Component<{}, IMenuState> {
             tabIcon: "#FFFFFF",
             inactiveTabIcon: "#8E9FBF",
             menuIcons: "#2AD9FF",
-            link: "#0078FF",
             action: "#336BFF",
             inProgess: "#00BFFF",
             complete: "#33ff00",
@@ -194,7 +193,7 @@ class Menu extends React.Component<{}, IMenuState> {
                   <Button size="sm">Saved Photos</Button>
                 </Nav.Link>
                 <span className="annoying">
-                  <button id="cloudBtn">Upload Media</button>
+                  <Button id="cloudBtn">Upload Media</Button>
                 </span>
               </>
             )}

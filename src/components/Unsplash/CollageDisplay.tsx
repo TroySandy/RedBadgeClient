@@ -256,7 +256,7 @@ class CollageDisplay extends React.Component<Iprops, CDState> {
               <Card.Title>
                 {this.state.artist_name}
                 {this.context.isAuth ? (
-                  <a onClick={(e: React.MouseEvent) => this.postPhoto(e)}>
+                  <a onClick={(e) => this.postPhoto(e)}>
                     {"    "}|{"   "}
                     <FontAwesomeIcon icon={faHeart} spin={this.state.spin} />
                   </a>

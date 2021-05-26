@@ -4,7 +4,7 @@ import Button from "react-bootstrap/Button";
 import { Redirect } from "react-router-dom";
 import UserContext from "../../UserContext/UserContext";
 import config from "../../config";
-import { AnyNaptrRecord } from "dns";
+
 interface IAdminState {
   userInfo: userInfo[];
 }

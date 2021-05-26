@@ -123,7 +123,8 @@ class Menu extends React.Component<{}, IMenuState> {
       portfolio_url: "",
       userId: this.context.user.id,
     });
-
+  }
+  componentDidUpdate() {
     (window as any).cloudinary.applyUploadWidget(
       document.getElementById("cloudBtn"),
       {
@@ -193,7 +194,7 @@ class Menu extends React.Component<{}, IMenuState> {
                   <Button size="sm">Saved Photos</Button>
                 </Nav.Link>
                 <span className="annoying">
-                  <Button id="cloudBtn">Upload Media</Button>
+                  <p id="cloudBtn">Upload Media</p>
                 </span>
               </>
             )}

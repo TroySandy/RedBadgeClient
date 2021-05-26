@@ -123,8 +123,7 @@ class Menu extends React.Component<{}, IMenuState> {
       portfolio_url: "",
       userId: this.context.user.id,
     });
-  }
-  componentDidUpdate() {
+
     (window as any).cloudinary.applyUploadWidget(
       document.getElementById("cloudBtn"),
       {

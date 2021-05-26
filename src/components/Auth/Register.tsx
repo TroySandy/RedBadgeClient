@@ -46,12 +46,13 @@ class Register extends React.Component<{}, RegisterState> {
       },
     })
       .then((res) => {
-        if (res.status != 201) {
-          console.log("error");
-        } else {
-          console.log("Success");
+        if (res.status != 200) {
+          console.log("Invalid username or password.");
         }
         return res.json();
+      })
+      .then((data) => {
+        this.context.setToken(data.token);
       })
       .catch((err) => console.log(err));
   };

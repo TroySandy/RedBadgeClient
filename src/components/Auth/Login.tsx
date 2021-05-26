@@ -86,16 +86,6 @@ class Login extends React.Component<{}, ILoginState> {
               </Col>
             </Form.Group>
 
-            <Form.Group as={Row} controlId="formHorizontalCheck">
-              <Col lg={{ span: 4, offset: 4 }}>
-                <Form.Check
-                  type="checkbox"
-                  label="Please confim you are not a robot"
-                  required
-                />
-              </Col>
-            </Form.Group>
-
             <Form.Group as={Row}>
               <Col xs={{ span: 4, offset: 5 }}>
                 <Button type="submit" className="loginBtn">

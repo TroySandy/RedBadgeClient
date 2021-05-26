@@ -193,7 +193,7 @@ class Menu extends React.Component<{}, IMenuState> {
                   <Button size="sm">Saved Photos</Button>
                 </Nav.Link>
                 <span className="annoying">
-                  <Button id="cloudBtn">Upload Media</Button>
+                  <p id="cloudBtn">Upload Media</p>
                 </span>
               </>
             )}

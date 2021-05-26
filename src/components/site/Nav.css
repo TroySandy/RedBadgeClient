@@ -1,7 +1,7 @@
 span > ul > li > img {
-  display: none;
+  display: none !important;
 }
 
 .annoying {
-  display: flex;
+  display: flex !important;
 }

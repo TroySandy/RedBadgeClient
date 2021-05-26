@@ -225,9 +225,15 @@ class CollageDisplay extends React.Component<Iprops, CDState> {
     });
   }
 
-  mouseEvent(e: React.BaseSyntheticEvent) {
+  mouseEnter(e: React.BaseSyntheticEvent) {
     this.setState({
-      spin: !this.state.spin,
+      spin: true,
+    });
+  }
+
+  mouseLeave(e: React.BaseSyntheticEvent) {
+    this.setState({
+      spin: false,
     });
   }
 
@@ -237,8 +243,8 @@ class CollageDisplay extends React.Component<Iprops, CDState> {
         <Container>
           <Card
             className="bg-dark text-muted"
-            onMouseEnter={(e: React.MouseEvent) => this.mouseEvent(e)}
-            onMouseLeave={(e: React.MouseEvent) => this.mouseEvent(e)}
+            onMouseEnter={(e: React.MouseEvent) => this.mouseEnter(e)}
+            onMouseLeave={(e: React.MouseEvent) => this.mouseLeave(e)}
           >
             <Card.Img
               src={this.state.url_reg}

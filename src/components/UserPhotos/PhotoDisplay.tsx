@@ -61,12 +61,12 @@ export default class PhotoDisplay extends React.Component<{}, IPhotoDisp> {
         this.setState({
           userMedia: media,
         });
-        console.log(this.context.isAuth);
+        // console.log(this.context.isAuth);
       });
   };
 
   componentDidMount() {
-    console.log(this.context.user.id);
+    // console.log(this.context.user.id);
 
     this.setState({
       userId: this.context.user.id,

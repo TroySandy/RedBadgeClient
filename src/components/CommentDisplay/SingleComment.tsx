@@ -72,6 +72,7 @@ class Comments extends React.Component<IComment, ISDisplay> {
           editing: false,
           review: "",
           rating: 3,
+          openModal: false,
         })
       )
       .catch((err) => console.log(err));

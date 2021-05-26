@@ -3,7 +3,7 @@ import { createApi } from "unsplash-js";
 import InfiniteScroll from "react-infinite-scroll-component";
 import "./Collage.css";
 import Container from "react-bootstrap/Container";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import config from "../../config";
 import { Blurhash } from "react-blurhash";
 
@@ -81,6 +81,7 @@ class Collage extends React.Component<{}, CollageState> {
               : null}
           </div>
         </InfiniteScroll>
+        {this.context.isAuth ? null : <Redirect to="/" />}
       </Container>
     );
   }

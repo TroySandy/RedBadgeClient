@@ -262,7 +262,7 @@ class CollageDisplay extends React.Component<Iprops, CDState> {
               </Card.Title>
             </Card.ImgOverlay>
           </Card>
-          {this.state.redirect ? <Redirect to="/" /> : null}
+          {this.context.isAuth ? <Redirect to="/" /> : null}
         </Container>
         <Modal
           aria-labelledby="contained-modal-title-vcenter"

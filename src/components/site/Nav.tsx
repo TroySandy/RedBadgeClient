@@ -186,8 +186,7 @@ class Menu extends React.Component<{}, IMenuState> {
       <>
         <Navbar bg="dark" variant="dark" sticky="top" expand="md">
           <Navbar.Brand href="/">
-            {/* <img src={Logo} alt="logo" height={50} /> */}
-            UPLOD
+            <img src={Logo} alt="logo" height={50} />
           </Navbar.Brand>
           <Nav className="mr-auto">
             {!this.context.isAuth ? null : (

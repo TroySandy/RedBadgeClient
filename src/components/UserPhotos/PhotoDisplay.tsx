@@ -43,7 +43,6 @@ export default class PhotoDisplay extends React.Component<{}, IPhotoDisp> {
     // console.log(this.state.userId);
 
     fetch(`${config.REACT_APP_SERVER_API_URL}/media/media`, {
-      method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${this.context.token}`,

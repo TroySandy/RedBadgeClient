@@ -13,7 +13,6 @@ interface Iprops {
     };
   };
 }
-
 interface IState {
   id: string;
   photoResult: IDisplayComments[];
@@ -72,8 +71,6 @@ class DisplayComments extends React.Component<Iprops, IState> {
   }
 
   fetchPhoto = () => {
-    // console.log(this.state.id);
-
     fetch(`${config.REACT_APP_SERVER_API_URL}/media/photo`, {
       method: "POST",
       body: JSON.stringify({
@@ -92,7 +89,6 @@ class DisplayComments extends React.Component<Iprops, IState> {
         }
       })
       .then((data) => {
-        console.log(data);
         this.setState({
           artist_name: data.photo[0].artist_name,
           artist_img: data.photo[0].artist_img,
@@ -113,12 +109,9 @@ class DisplayComments extends React.Component<Iprops, IState> {
   };
 
   componentDidMount() {
-    console.log(this.props.location.state.id);
-
     this.setState({
       id: this.props.location.state.id,
     });
-
     setTimeout(() => {
       this.fetchPhoto();
     }, 300);
@@ -135,7 +128,9 @@ class DisplayComments extends React.Component<Iprops, IState> {
             >
               <Card.Img src={this.state.image} alt="Card image" />
               <Card.ImgOverlay>
-                <Card.Title>{this.state.artist_name}</Card.Title>
+                <Card.Title className="text-muted">
+                  {this.state.artist_name}
+                </Card.Title>
                 <Card.Text>
                   {this.state.comments.map((comment: any) => {
                     return <Comments comment={comment} />;

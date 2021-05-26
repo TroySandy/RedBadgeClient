@@ -46,13 +46,11 @@ class Login extends React.Component<{}, ILoginState> {
         return res.json();
       })
       .then((data) => {
-        console.log(data.token);
         this.context.setToken(data.token);
       });
   }
 
   handleChange(e: React.BaseSyntheticEvent) {
-    console.log(this.state.username);
     this.setState((prevstate) => ({
       ...prevstate,
       [e.target.name]: e.target.value as Pick<ILoginState, keyof ILoginState>,

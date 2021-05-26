@@ -1,12 +1,14 @@
 import React from "react";
 import Container from "react-bootstrap/Container";
 import Card from "react-bootstrap/Card";
+import "./Collage.css";
 import UserContext from "../../UserContext/UserContext";
 import config from "../../config";
+import DownloadLink from "react-download-link";
 import {
   faHeart,
   faSave,
-  faHeartBroken,
+  faUserCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Modal, Row, Col, Form, Button } from "react-bootstrap";
@@ -14,13 +16,13 @@ import { Redirect } from "react-router-dom";
 interface Iprops {
   location: {
     state: {
-      image: any;
+      image: imageType;
     };
   };
 }
 
 interface CDState {
-  media: any;
+  media: imageType[] | any;
   comment: string;
   comments: string[];
   rating: 3;
@@ -41,6 +43,42 @@ interface CDState {
   artist_name: string;
   artist_img: string;
   portfolio_url: string;
+  spin: boolean;
+}
+
+interface imageType {
+  alt_description: string;
+  blur_hash: string;
+  description: string | null;
+  links: {
+    download: string;
+    download_locations: string;
+    html: string;
+    self: string;
+  };
+  urls: {
+    full: string;
+    raw: string;
+    regular: string;
+    small: string;
+    thumb: string;
+  };
+  user: {
+    bio: string;
+    links: {
+      photos: string;
+      portfolio: string;
+      html: string;
+      self: string;
+    };
+    name: string;
+    portfolio_url: string;
+    profile_image: {
+      large: string;
+      medium: string;
+      small: string;
+    };
+  };
 }
 
 class CollageDisplay extends React.Component<Iprops, CDState> {
@@ -69,6 +107,7 @@ class CollageDisplay extends React.Component<Iprops, CDState> {
       artist_img: "",
       portfolio_url: "",
       redirect: false,
+      spin: false,
     };
   }
   handleOpenModal = () => {
@@ -186,11 +225,21 @@ class CollageDisplay extends React.Component<Iprops, CDState> {
     });
   }
 
+  mouseEvent(e: React.BaseSyntheticEvent) {
+    this.setState({
+      spin: !this.state.spin,
+    });
+  }
+
   render() {
     return (
       <>
         <Container>
-          <Card className="bg-dark text-white">
+          <Card
+            className="bg-dark text-muted"
+            onMouseEnter={(e: React.MouseEvent) => this.mouseEvent(e)}
+            onMouseLeave={(e: React.MouseEvent) => this.mouseEvent(e)}
+          >
             <Card.Img
               src={this.state.url_reg}
               alt="Card image"
@@ -202,13 +251,15 @@ class CollageDisplay extends React.Component<Iprops, CDState> {
                 {this.state.artist_name}
                 {this.context.isAuth ? (
                   <a onClick={(e: React.MouseEvent) => this.postPhoto(e)}>
-                    | <FontAwesomeIcon icon={faHeart} />
+                    {"    "}|{"   "}
+                    <FontAwesomeIcon icon={faHeart} spin={this.state.spin} />
                   </a>
-                ) : null}
+                ) : (
+                  <a onClick={this.handleOpenModal}>
+                    | <FontAwesomeIcon icon={faHeart} spin={this.state.spin} />
+                  </a>
+                )}
               </Card.Title>
-              <a href={this.state.portfolio_url} target="_blank">
-                Artist Portfolio
-              </a>
             </Card.ImgOverlay>
           </Card>
           {this.state.redirect ? <Redirect to="/" /> : null}
@@ -218,10 +269,8 @@ class CollageDisplay extends React.Component<Iprops, CDState> {
           id="commentModal"
           centered
           show={this.state.openModal}
-          backdrop
+          onClick={this.onHide}
         >
-          <Modal.Title id="commentTitle"></Modal.Title>
-
           <Modal.Body className="show-grid" id="commentBody">
             <Container>
               <Row>
@@ -241,22 +290,21 @@ class CollageDisplay extends React.Component<Iprops, CDState> {
                       target="_blank"
                       onClick={this.onHide}
                     >
-                      Artist Portfolio
+                      <FontAwesomeIcon icon={faUserCircle} />
+                      Artist Profile
                     </a>
                   ) : null}
 
                   <br />
-                  <a
-                    href={this.state.image}
-                    onClick={this.onHide}
-                    target="_blank"
-                  >
-                    Image Download
-                  </a>
+                  <DownloadLink
+                    label={<FontAwesomeIcon icon={faSave} />}
+                    filename={this.state.image}
+                    exportFile={() => "my cached data"}
+                  />
                 </Col>
               </Row>
 
-              {this.state.openComment ? (
+              {this.context.isAuth ? (
                 <Container>
                   <Row>
                     <Col xs={6}>
@@ -310,7 +358,9 @@ class CollageDisplay extends React.Component<Iprops, CDState> {
                     </Col>
                   </Row>
                 </Container>
-              ) : null}
+              ) : (
+                <h3>Please Log In To Leave A Comment or Save Photo</h3>
+              )}
             </Container>
           </Modal.Body>
         </Modal>

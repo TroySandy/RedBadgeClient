@@ -58,7 +58,6 @@ class Comments extends React.Component<IComment, ISDisplay> {
   }
 
   deleteComment(e: React.BaseSyntheticEvent) {
-    console.log("fired");
     fetch(`${config.REACT_APP_SERVER_API_URL}/comments/`, {
       method: "DELETE",
       body: JSON.stringify({ id: this.state.id }),
@@ -102,7 +101,6 @@ class Comments extends React.Component<IComment, ISDisplay> {
         }
       })
       .then((data) => {
-        console.log(data.updatedComment[1][0]);
         this.setState({
           openModal: false,
         });
@@ -110,8 +108,6 @@ class Comments extends React.Component<IComment, ISDisplay> {
   }
 
   componentDidMount() {
-    // console.log(this.props.comment);
-
     this.setState({
       review: this.props.comment.comment,
       favorite: this.props.comment.favorite,

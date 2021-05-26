@@ -61,7 +61,7 @@ export default class PhotoDisplay extends React.Component<{}, IPhotoDisp> {
         this.setState({
           userMedia: media,
         });
-        console.log(this.state.userMedia);
+        console.log(this.context.isAuth);
       });
   };
 
@@ -78,9 +78,6 @@ export default class PhotoDisplay extends React.Component<{}, IPhotoDisp> {
   }
 
   render() {
-    // {
-    //   !this.context.isAuth ? <Redirect to="/" /> : null;
-    // }
     return (
       <>
         <Container className="divContainer">
@@ -99,7 +96,6 @@ export default class PhotoDisplay extends React.Component<{}, IPhotoDisp> {
                 : null}
             </div>
           </InfiniteScroll>
-          {!this.context.user.isAdmin ? <Redirect to="/" /> : null}
         </Container>
       </>
     );
@@ -107,30 +103,61 @@ export default class PhotoDisplay extends React.Component<{}, IPhotoDisp> {
 }
 
 interface UserMediaState {
-  url: string;
-  image: any;
+  image: imageType[] | any;
+}
+
+interface imageType {
+  alt_description: string;
+  blur_hash: string;
+  description: string | null;
+  links: {
+    download: string;
+    download_locations: string;
+    html: string;
+    self: string;
+  };
+  urls: {
+    full: string;
+    raw: string;
+    regular: string;
+    small: string;
+    thumb: string;
+  };
+  user: {
+    bio: string;
+    links: {
+      photos: string;
+      portfolio: string;
+      html: string;
+      self: string;
+    };
+    name: string;
+    portfolio_url: string;
+    profile_image: {
+      large: string;
+      medium: string;
+      small: string;
+    };
+  };
 }
 interface UserMediaProps {
-  image: any;
+  image: imageType;
 }
 
 class UserMedia extends React.Component<UserMediaProps, UserMediaState> {
   constructor(props: UserMediaProps) {
     super(props);
     this.state = {
-      url: "",
       image: [],
     };
   }
   componentWillUnmount() {
     this.setState({
-      url: "",
-      image: "",
+      image: [],
     });
   }
   componentDidMount() {
     this.setState({
-      url: this.props.image,
       image: this.props.image,
     });
     console.log(this.props.image);

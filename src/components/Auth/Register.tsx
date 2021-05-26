@@ -14,12 +14,7 @@ export interface RegisterState {
   email: string;
   password: string;
   isAdmin: boolean;
-  // verifyEmail: boolean;
-  // verifyPassword: boolean;
 }
-
-export interface RegisterProps {}
-
 class Register extends React.Component<{}, RegisterState> {
   static contextType = UserContext;
   constructor(props: {}) {
@@ -54,21 +49,14 @@ class Register extends React.Component<{}, RegisterState> {
         if (res.status != 201) {
           console.log("error");
         } else {
-          //redirect to login
           console.log("Success");
-          // props.history.push("/login");
         }
         return res.json();
-      })
-      .then((res) => {
-        console.log(res);
-        this.context.setToken(res.token);
       })
       .catch((err) => console.log(err));
   };
 
   componentDidMount() {
-    console.log("mounted, hehehe");
     this.setState({
       firstName: "",
       lastName: "",

@@ -5,8 +5,10 @@ import "./Collage.css";
 import Container from "react-bootstrap/Container";
 import { Link } from "react-router-dom";
 import config from "../../config";
+import { Blurhash } from "react-blurhash";
+
 interface CollageState {
-  images: any;
+  images: imageType[];
   loaded: boolean;
 }
 
@@ -16,6 +18,13 @@ const api = createApi({
   accessKey: `${config.REACT_APP_UNSPLASH_APIKEY}`,
 });
 
+interface ResultsType {
+  response?: string[];
+  status?: number;
+  type?: string;
+  errors?: string[];
+  source?: string;
+}
 class Collage extends React.Component<{}, CollageState> {
   constructor(props: {}) {
     super(props);
@@ -66,7 +75,7 @@ class Collage extends React.Component<{}, CollageState> {
         >
           <div className="ImageDisplay" style={{ marginTop: "30px" }}>
             {this.state.loaded
-              ? this.state.images.map((image: any, index: number) => (
+              ? this.state.images.map((image: imageType, index: number) => (
                   <UnsplashImage image={image} key={index} />
                 ))
               : null}
@@ -81,10 +90,45 @@ export default Collage;
 
 interface UnsplasheState {
   url: string;
-  image: any;
+  image: imageType[] | any;
+}
+
+interface imageType {
+  alt_description: string;
+  blur_hash: string;
+  description: string | null;
+  links: {
+    download: string;
+    download_locations: string;
+    html: string;
+    self: string;
+  };
+  urls: {
+    full: string;
+    raw: string;
+    regular: string;
+    small: string;
+    thumb: string;
+  };
+  user: {
+    bio: string;
+    links: {
+      photos: string;
+      portfolio: string;
+      html: string;
+      self: string;
+    };
+    name: string;
+    portfolio_url: string;
+    profile_image: {
+      large: string;
+      medium: string;
+      small: string;
+    };
+  };
 }
 interface unsplashProps {
-  image: any;
+  image: imageType;
 }
 
 class UnsplashImage extends React.Component<unsplashProps, UnsplasheState> {
@@ -98,7 +142,7 @@ class UnsplashImage extends React.Component<unsplashProps, UnsplasheState> {
   componentWillUnmount() {
     this.setState({
       url: "",
-      image: "",
+      image: [],
     });
   }
   componentDidMount() {
@@ -106,7 +150,6 @@ class UnsplashImage extends React.Component<unsplashProps, UnsplasheState> {
       url: this.props.image.urls.regular,
       image: this.props.image,
     });
-    console.log(this.props.image);
   }
   render() {
     return (

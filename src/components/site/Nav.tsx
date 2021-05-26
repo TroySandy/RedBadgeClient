@@ -2,9 +2,8 @@ import React from "react";
 import UserContext from "../../UserContext/UserContext";
 import { Navbar, Nav, Button } from "react-bootstrap";
 import "./Nav.css";
+import Logo from "../../assets/brandmark-design.png";
 import config from "../../config";
-
-interface IMenuProps {}
 
 interface IMenuState {
   private: boolean;
@@ -54,8 +53,6 @@ class Menu extends React.Component<{}, IMenuState> {
   }
 
   postMedia = () => {
-    console.log(this.context.user.id);
-
     fetch(`${config.REACT_APP_SERVER_API_URL}/media/upload`, {
       method: "POST",
       body: JSON.stringify({
@@ -78,8 +75,6 @@ class Menu extends React.Component<{}, IMenuState> {
       },
     })
       .then((res) => {
-        console.log(res);
-
         if (res.status !== 201) {
           console.log("File not Uploaded", res.status);
         } else {
@@ -87,7 +82,6 @@ class Menu extends React.Component<{}, IMenuState> {
         }
       })
       .then((data) => {
-        console.log("Media", data);
         this.setState({
           private: false,
           favorite: true,
@@ -129,8 +123,8 @@ class Menu extends React.Component<{}, IMenuState> {
       portfolio_url: "",
       userId: this.context.user.id,
     });
-
-    console.log(this.state.userId, this.context.token);
+  }
+  componentDidUpdate() {
     (window as any).cloudinary.applyUploadWidget(
       document.getElementById("cloudBtn"),
       {
@@ -150,6 +144,7 @@ class Menu extends React.Component<{}, IMenuState> {
             tabIcon: "#FFFFFF",
             inactiveTabIcon: "#8E9FBF",
             menuIcons: "#2AD9FF",
+            link: "#0078FF",
             action: "#336BFF",
             inProgess: "#00BFFF",
             complete: "#33ff00",
@@ -190,13 +185,18 @@ class Menu extends React.Component<{}, IMenuState> {
     return (
       <>
         <Navbar bg="dark" variant="dark" sticky="top" expand="md">
-          <Navbar.Brand href="/">PhotoWall</Navbar.Brand>
+          <Navbar.Brand href="/">
+            {/* <img src={Logo} alt="logo" height={50} /> */}
+            UPLOD
+          </Navbar.Brand>
           <Nav className="mr-auto">
             {!this.context.isAuth ? null : (
               <>
-                <Nav.Link href="/media">Saved Photos</Nav.Link>
+                <Nav.Link href="/media">
+                  <Button size="sm">Saved Photos</Button>
+                </Nav.Link>
                 <span className="annoying">
-                  <Button id="cloudBtn">Upload Media</Button>
+                  <p id="cloudBtn">Upload Media</p>
                 </span>
               </>
             )}
@@ -214,7 +214,7 @@ class Menu extends React.Component<{}, IMenuState> {
               </Nav.Link>
             </>
           ) : (
-            <Button variant="outline-info" onClick={(e) => this.logOut(e)}>
+            <Button variant="outline-secondary" onClick={(e) => this.logOut(e)}>
               LogOut
             </Button>
           )}

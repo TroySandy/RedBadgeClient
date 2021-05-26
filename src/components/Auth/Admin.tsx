@@ -4,10 +4,53 @@ import Button from "react-bootstrap/Button";
 import { Redirect } from "react-router-dom";
 import UserContext from "../../UserContext/UserContext";
 import config from "../../config";
+import { AnyNaptrRecord } from "dns";
 interface IAdminState {
-  userInfo: any;
+  userInfo: userInfo[];
+}
+interface userInfo {
+  createdAt: string;
+  email?: string;
+  firstName?: string;
+  id: string;
+  isAdmin: boolean;
+  media: Media[];
+  password?: string;
+  updatedAt: string;
+  username: string;
 }
 
+interface Media {
+  artist_img?: string;
+  artist_name?: string;
+  blur_hash?: string;
+  comments: Comments[];
+  createdAt: string;
+  favorite: boolean;
+  id: string;
+  image: string;
+  portfolio_url?: string;
+  private: boolean;
+  thumbnail: string;
+  updatedAt?: string;
+  url_raw?: string;
+  url_reg?: string;
+  url_small?: string;
+  url_thumb?: string;
+  userId: string;
+}
+
+interface Comments {
+  comment?: string;
+  createdAt?: string;
+  favorite: boolean;
+  id: string;
+  mediumId?: string;
+  private: boolean;
+  rating?: string;
+  updatedAt?: string;
+  userId?: string;
+}
 class AdminTable extends React.Component<{}, IAdminState> {
   static contextType = UserContext;
   constructor(props: {}) {
@@ -23,10 +66,7 @@ class AdminTable extends React.Component<{}, IAdminState> {
       },
     })
       .then((res) => {
-        console.log(res);
-
         if (res.status !== 200) {
-          console.log("Record not Deleted", res.status);
         } else {
           return res.json();
         }
@@ -35,7 +75,6 @@ class AdminTable extends React.Component<{}, IAdminState> {
         this.setState({
           userInfo: data.User,
         });
-        console.log(data);
       })
       .catch((err) => console.log(err));
   };
@@ -49,7 +88,7 @@ class AdminTable extends React.Component<{}, IAdminState> {
         {this.context.user.isAdmin ? null : <Redirect to="/" />}
         <div>
           <div>
-            {this.state.userInfo.map((user: any) => {
+            {this.state.userInfo.map((user: userInfo) => {
               return (
                 <>
                   <p>{user.username}</p>
@@ -69,10 +108,10 @@ export default AdminTable;
 interface userstate {
   id: string;
   username: string;
-  media: any;
+  media: Media[];
 }
 interface userprop {
-  user: any;
+  user: userInfo;
   update: CallableFunction;
 }
 class UserDelete extends React.Component<userprop, userstate> {
@@ -86,8 +125,6 @@ class UserDelete extends React.Component<userprop, userstate> {
   }
 
   deleteUser(e: React.BaseSyntheticEvent) {
-    console.log(this.state.id);
-
     fetch(`${config.REACT_APP_SERVER_API_URL}/user/admin`, {
       method: "DELETE",
       body: JSON.stringify({
@@ -98,8 +135,6 @@ class UserDelete extends React.Component<userprop, userstate> {
       },
     })
       .then((res) => {
-        console.log(res);
-
         if (res.status !== 200) {
           console.log("Record not Deleted", res.status);
         } else {
@@ -124,7 +159,7 @@ class UserDelete extends React.Component<userprop, userstate> {
           Delete User
         </Button>
         <div>
-          {this.state.media.map((image: any) => {
+          {this.state.media.map((image: Media) => {
             return (
               <>
                 <MediaDelete image={image} update={this.props.update} />
@@ -140,11 +175,11 @@ class UserDelete extends React.Component<userprop, userstate> {
 interface mediastate {
   id: string;
   image: string;
-  comments: any;
+  comments: Comments[];
 }
 
 interface mediaprop {
-  image: any;
+  image: Media;
   update: CallableFunction;
 }
 
@@ -158,8 +193,6 @@ class MediaDelete extends React.Component<mediaprop, mediastate> {
     };
   }
   deleteMedia(e: React.BaseSyntheticEvent) {
-    console.log(this.state.id);
-
     fetch(`${config.REACT_APP_SERVER_API_URL}/media/admin`, {
       method: "DELETE",
       body: JSON.stringify({
@@ -170,8 +203,6 @@ class MediaDelete extends React.Component<mediaprop, mediastate> {
       },
     })
       .then((res) => {
-        console.log(res);
-
         if (res.status !== 201) {
           console.log("Record not Deleted", res.status);
         } else {
@@ -199,7 +230,7 @@ class MediaDelete extends React.Component<mediaprop, mediastate> {
           Delete Media
         </Button>
         <div>
-          {this.state.comments.map((comment: any) => {
+          {this.state.comments.map((comment: Comments) => {
             return <CommentDelete comment={comment} />;
           })}
         </div>
@@ -210,18 +241,18 @@ class MediaDelete extends React.Component<mediaprop, mediastate> {
 
 interface commentstate {
   id: string;
-  comment: string;
+  comment: Comments[];
 }
 
 interface commentprop {
-  comment: any;
+  comment: Comments | any;
 }
 
 class CommentDelete extends React.Component<commentprop, commentstate> {
   constructor(props: commentprop) {
     super(props);
     this.state = {
-      comment: "",
+      comment: [],
       id: "",
     };
   }
@@ -250,7 +281,7 @@ class CommentDelete extends React.Component<commentprop, commentstate> {
 
   componentDidMount() {
     this.setState({
-      comment: this.props.comment.comment,
+      comment: this.props.comment,
       id: this.props.comment.id,
     });
   }

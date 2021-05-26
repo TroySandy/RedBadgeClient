@@ -81,7 +81,6 @@ class Collage extends React.Component<{}, CollageState> {
               : null}
           </div>
         </InfiniteScroll>
-        {this.context.isAuth ? null : <Redirect to="/" />}
       </Container>
     );
   }

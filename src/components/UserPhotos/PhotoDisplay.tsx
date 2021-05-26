@@ -96,7 +96,6 @@ export default class PhotoDisplay extends React.Component<{}, IPhotoDisp> {
                 : null}
             </div>
           </InfiniteScroll>
-          {this.context.isAuth ? null : <Redirect to="/" />}
         </Container>
       </>
     );

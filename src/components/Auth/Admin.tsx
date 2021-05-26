@@ -85,7 +85,7 @@ class AdminTable extends React.Component<{}, IAdminState> {
   render() {
     return (
       <Container>
-        {this.context.user.isAdmin ? null : <Redirect to="/" />}
+        {/* {this.context.user.isAdmin ? null : <Redirect to="/" />} */}
         <div>
           <div>
             {this.state.userInfo.map((user: userInfo) => {

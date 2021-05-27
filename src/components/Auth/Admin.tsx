@@ -85,10 +85,10 @@ class AdminTable extends React.Component<{}, IAdminState> {
   render() {
     return (
       <Container>
-        {/* {this.context.user.isAdmin ? null : <Redirect to="/" />} */}
+        {this.context.user.isAdmin ? null : <Redirect to="/" />}
         <div>
           <div>
-            {this.state.userInfo.map((user: userInfo) => {
+            {this.state.userInfo.map((user: any) => {
               return (
                 <>
                   <p>{user.username}</p>
@@ -159,7 +159,7 @@ class UserDelete extends React.Component<userprop, userstate> {
           Delete User
         </Button>
         <div>
-          {this.state.media.map((image: Media) => {
+          {this.state.media.map((image: any) => {
             return (
               <>
                 <MediaDelete image={image} update={this.props.update} />
